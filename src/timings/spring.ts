@@ -27,7 +27,8 @@ export class Spring {
   solve (t: number) {
     let cul = 0
     if (this.m_zeta < 1) {
-      cul = Math.exp(-t * this.m_zeta * this.m_w0) * (this.m_A * Math.cos(this.m_wd * t) + this.m_B * Math.sin(this.m_wd * t))
+      cul = Math.exp(-t * this.m_zeta * this.m_w0) * (this.m_A * Math.cos(this.m_wd * t)
+      + this.m_B * Math.sin(this.m_wd * t))
     } else {
       cul = (this.m_A + this.m_B * t) * Math.exp(-t * this.m_w0)
     }
