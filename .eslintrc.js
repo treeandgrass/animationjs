@@ -32,5 +32,7 @@ module.exports = {
     'import/extensions': 'off',
     'lines-between-class-members': 'off',
     'space-before-function-paren': ['error', 'always'],
+    'no-return-assign': 'off',
+    'no-mixed-operators': 'off',
   },
 }

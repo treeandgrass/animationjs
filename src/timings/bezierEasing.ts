@@ -95,3 +95,12 @@ export const bezier = (mX1: number, mY1: number, mX2: number, mY2: number) => {
   }
   return BezierEasing
 }
+
+/**
+ * https://developer.mozilla.org/en-US/docs/Web/CSS/transition-timing-function
+ */
+export const ease = bezier(0.25, 0.1, 0.25, 1.0)
+export const linear = bezier(0.0, 0.0, 1.0, 1.0)
+export const easeIn = bezier(0.42, 0, 1.0, 1.0)
+export const easeOut = bezier(0, 0, 0.58, 1.0)
+export const easeInOut = bezier(0.42, 0, 0.58, 1.0)
