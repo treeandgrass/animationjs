@@ -18,6 +18,7 @@ module.exports = {
       },
     },
   },
+  ignorePatterns: ['.eslintrc.js', 'webpack.config.js'],
   plugins: [
     '@typescript-eslint',
   ],

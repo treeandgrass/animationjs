@@ -18,35 +18,33 @@ export const easeInOutCubic = (b: number, c: number, d: number) => (t: number) =
   return c / 2 * ((t -= 2) * t * t + 2) + b
 }
 
-export const easeInQuart = (b: number, c: number, d: number) => (t: number) => (c * (t /= d) * t * t * t + b)
-
 export const easeInOutQuart = (b: number, c: number, d: number) => (t: number) => {
   t /= d / 2
   if (t < 1) return c / 2 * t * t * t * t + b
   return -c / 2 * ((t -= 2) * t * t * t - 2) + b
 }
+export const easeInQuart = (b: number, c: number, d: number) => (t: number) => (c * (t /= d) * t * t * t + b)
 
-// easeInQuint: function (x, t, b, c, d) {
-//   return c*(t/=d)*t*t*t*t + b;
-// },
-// easeOutQuint: function (x, t, b, c, d) {
-//   return c*((t=t/d-1)*t*t*t*t + 1) + b;
-// },
-// easeInOutQuint: function (x, t, b, c, d) {
-//   if ((t/=d/2) < 1) return c/2*t*t*t*t*t + b;
-//   return c/2*((t-=2)*t*t*t*t + 2) + b;
-// },
-// easeInSine: function (x, t, b, c, d) {
-//   return -c * Math.cos(t/d * (Math.PI/2)) + c + b;
-// },
-// easeOutSine: function (x, t, b, c, d) {
-//   return c * Math.sin(t/d * (Math.PI/2)) + b;
-// },
+export const easeInQuint = (b: number, c: number, d: number) => (t: number) => (c * (t /= d) * t * t * t * t + b)
+export const easeOutQuint = (b: number, c: number, d: number) => (t: number) => (c
+  * ((t = t / d - 1) * t * t * t * t + 1) + b)
+
+export const easeInOutQuint = (b: number, c: number, d: number) => (t: number) => {
+  t /= d / 2
+  if (t < 1) return c / 2 * t * t * t * t * t + b
+  return c / 2 * ((t -= 2) * t * t * t * t + 2) + b
+}
+
+export const easeInSine = (b: number, c: number, d: number) => (t: number) => (-c
+  * Math.cos(t / d * (Math.PI / 2)) + c + b)
+
+export const easeOutSine = (b: number, c: number, d: number) => (t: number) => (c * Math.sin(t / d * (Math.PI / 2)) + b)
+
 // easeInOutSine: function (x, t, b, c, d) {
-//   return -c/2 * (Math.cos(Math.PI*t/d) - 1) + b;
+//   return -c / 2 * (Math.cos(Math.PI * t / d) - 1) + b;
 // },
 // easeInExpo: function (x, t, b, c, d) {
-//   return (t==0) ? b : c * Math.pow(2, 10 * (t/d - 1)) + b;
+//   return (t==0) ? b : c * Math.pow(2, 10 * (t  /d - 1)) + b;
 // },
 // easeOutExpo: function (x, t, b, c, d) {
 //   return (t==d) ? b+c : c * (-Math.pow(2, -10 * t/d) + 1) + b;
