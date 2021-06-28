@@ -35,5 +35,12 @@ module.exports = {
     'space-before-function-paren': ['error', 'always'],
     'no-return-assign': 'off',
     'no-mixed-operators': 'off',
+    'class-methods-use-this': 'off',
+    'no-unused-vars': 'off',
+    'no-shadow': 'off',
+    'comma-dangle': 'off',
+    'no-bitwise': 'off',
+    'arrow-body-style': 'off',
+    'no-restricted-properties': 'off'
   },
 }

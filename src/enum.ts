@@ -4,12 +4,14 @@
 * active Corresponds to the timeline active phase.
 * after Corresponds to the timeline after phase.
 */
-export enum TimelinePhase { "inactive", "before", "active", "after" }
+export enum TimelinePhase { 'inactive', 'before', 'active', 'after' }
 
-export enum FillMode { "none", "forwards", "backwards", "both", "auto" }
+export enum FillMode { 'none', 'forwards', 'backwards', 'both', 'auto' }
 
-export enum PlaybackDirection { "normal", "reverse", "alternate", "alternate-reverse" }
+export enum PlaybackDirection { 'normal', 'reverse', 'alternate', 'alternate-reverse' }
 
-export enum AnimationReplaceState { "active", "removed", "persisted" }
+export enum AnimationReplaceState { 'active', 'removed', 'persisted' }
 
-export enum AnimationPlayState { "idle", "running", "paused", "finished" }
+export enum AnimationPlayState { 'idle', 'running', 'paused', 'finished' }
+
+export enum CompositeOperation { REPLACE = 'replace', ADD = 'add', ACCU = 'accumulate' }

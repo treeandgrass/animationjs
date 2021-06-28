@@ -3,7 +3,7 @@ const HtmlWebpackPlugin = require('html-webpack-plugin')
 
 module.exports = function(env) {
     const config = {
-        entry: './src/index.ts',
+        entry: './examples/triangle/simple.ts',
         devtool: env.production ? 'source-maps' : 'eval',
         mode: env.production ? 'production' : 'development',
         module: {
@@ -32,7 +32,7 @@ module.exports = function(env) {
         plugins: [
             new HtmlWebpackPlugin({
                 filename: 'index.html',
-                template: 'html/index.html'
+                template: './examples/triangle/simple1.html'
             })
         ]
     }

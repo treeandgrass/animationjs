@@ -1,0 +1,1 @@
+{"id":"simple1.html","dependencies":[],"generated":{"html":"<!DOCTYPE html>\n<html>\n    <head>\n        <title>trianngle</title>\n    </head>\n    <body>\n        <canvas width=\"500\" height=\"500\" id=\"canvas\"></canvas>\n    </body>\n</html>"},"sourceMaps":null,"error":null,"hash":"4a9bf563919b5d517e6ee6d9b13f2145","cacheData":{}}

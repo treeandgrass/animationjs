@@ -1,4 +1,4 @@
-import { FillMode, PlaybackDirection } from '../enum'
+import { FillMode, PlaybackDirection, CompositeOperation } from '../enum'
 
 export interface IEffectTiming {
     delay: number
@@ -38,5 +38,22 @@ export interface IComputedEffectTiming {
   currentIteration: number
 }
 
+export type IEasingFunction = (t: number) => number
 
+export interface Interpolation {
+  to: number
+  from: number
+  prop: string
+  propOrigin: number
+  propTarget: number
+  composite: CompositeOperation
+  easingFunction: IEasingFunction
+}
 
+export interface KeyframeEffectOptions extends IOptionalEffectTiming {
+  composite?: CompositeOperation
+  pseudoElement?: string
+}
+export interface IObj {
+  [key: string]: string | number | string[] | number[]
+}

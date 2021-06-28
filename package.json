@@ -3,26 +3,34 @@
   "version": "1.0.0",
   "description": "一个轻量级的动画库",
   "main": "index.js",
-  "dependencies": {
-    "ts-loader": "^9.2.2",
-    "typescript": "^4.3.2",
-    "webpack-cli": "^4.7.0",
-    "webpack": "^5.38.1"
-  },
   "devDependencies": {
-    "@types/react": "^17.0.9",
-    "@types/react-dom": "^17.0.6",
-    "@typescript-eslint/eslint-plugin": "^4.26.1",
-    "@typescript-eslint/parser": "^4.26.1",
-    "eslint": "^7.28.0",
-    "eslint-config-airbnb-base": "^14.2.1",
-    "eslint-plugin-import": "^2.23.4",
-    "react": "^17.0.2",
-    "react-dom": "^17.0.2"
+    "@types/jest": "^24.0.23",
+    "@types/signale": "^1.2.1",
+    "html-webpack-plugin": "^4.0.0-beta.11",
+    "http-server": "^0.12.1",
+    "jest": "^24.9.0",
+    "jest-canvas-mock": "^2.2.0",
+    "signale": "^1.4.0",
+    "ts-jest": "^24.2.0",
+    "ts-loader": "^6.2.1",
+    "tslint": "^5.20.1",
+    "typescript": "^3.7.3",
+    "typescript-eslint-parser": "^22.0.0",
+    "webpack": "^4.41.2",
+    "webpack-cli": "^3.3.10",
+    "webpack-dev-server": "^3.9.0"
   },
   "scripts": {
-    "test": "webpack --config webpack.config.js",
-    "online": "webpack --config webpack.config.js"
+    "build": "webpack --config webpack.config.js --env.production",
+    "dev": "webpack --config webpack.config.js --env.development",
+    "server": "webpack-dev-server --config webpack.config.js --env.development",
+    "test": "jest",
+    "simple": "webpack-dev-server --config ./examples/triangle/webpack.config.js --env.production"
+  },
+  "dependencies": {
+    "@types/gl-matrix": "^2.4.5",
+    "gl-matrix": "^3.1.0",
+    "ulid": "^2.3.0"
   },
   "repository": {
     "type": "git",
