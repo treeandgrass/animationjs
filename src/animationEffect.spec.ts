@@ -39,7 +39,7 @@ describe("run KeyframeEffect", () => {
       composite: CompositeOperation.REPLACE
     })
     const keyFrames = ae.getKeyframes()
-    console.log(keyFrames)
+    console.log((ae as any).interpolations(keyFrames))
   })
 })
 

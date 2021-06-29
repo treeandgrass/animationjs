@@ -81,8 +81,10 @@ export const initialValues = {
   zIndex: 'auto'
 }
 
-export const EASING_FUNCTION_NAME = {
+export const EASING_FUNCTION_SET = {
   linear: 'linear'
 }
 
 export const SUPPORTED_EASING = ['linear', 'ease', 'ease-in', 'ease-out', 'ease-in-out', 'spring']
+
+export const PreserveProps = ['easing', 'offset', 'composite']

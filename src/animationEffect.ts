@@ -1,6 +1,6 @@
 import { IOptionalEffectTiming, IEffectTiming, IComputedEffectTiming,
-  KeyframeEffectOptions, IObj, Interpolation } from './types'
-import { initialValues, EASING_FUNCTION_NAME, SUPPORTED_EASING } from './constant'
+  KeyframeEffectOptions, IObj, Interpolation, EASING_FUNCTION_NAME } from './types'
+import { initialValues, EASING_FUNCTION_SET, SUPPORTED_EASING, PreserveProps } from './constant'
 import { CompositeOperation } from './enum'
 import { isNull } from './utils'
 
@@ -27,14 +27,29 @@ export class KeyframeEffect implements AnimationEffect {
     this.keyframes = this.normalizeKeyFrames(keyframes)
   }
 
+  private groupKeyFramesByProp (normKeyFrames: IObj[]) {
+    const groupKeyFrames = new Map<string, IObj[]>()
+    normKeyFrames.forEach((item) => {
+      Object.keys(item).forEach((key: string) => {
+        if (!PreserveProps.includes(key)) {
+          if (!groupKeyFrames.has(key)) {
+            groupKeyFrames.set(key, [])
+          }
+          const keyFrameSet = groupKeyFrames.get(key)
+          keyFrameSet?.push(item)
+        }
+      })
+    })
+    return groupKeyFrames
+  }
+
   private normalizeKeyFrames (keyframes: IObj[] | IObj): IObj[] {
     let frames: IObj[] = []
     // 非数组，处理成数组
     if (!Array.isArray(keyframes)) {
-      const preserveProps = ['easing', 'offset', 'composite']
       Object.keys(keyframes).forEach((prop) => {
         // 不处理['easing', 'offset', 'composite']
-        if (preserveProps.includes(prop)) {
+        if (PreserveProps.includes(prop)) {
           return
         }
         const value = keyframes[prop]
@@ -108,7 +123,7 @@ export class KeyframeEffect implements AnimationEffect {
             throw new Error(`${easingValue} is not supported`)
           }
           if (!easingValue) {
-            frame.easing = EASING_FUNCTION_NAME.linear // default linear
+            frame.easing = EASING_FUNCTION_SET.linear // default linear
           }
         } else {
           frame[prop] = propValue + ''
@@ -159,26 +174,35 @@ export class KeyframeEffect implements AnimationEffect {
     return frames
   }
 
-  // private normalizeEasing(easing: string, duration) {
-  //   if (is.fnc(easing)) return easing;
-  //   const name = easing.split('(')[0];
-  //   const ease = penner[name];
-  //   const args = parseEasingParameters(easing);
-  //   switch (name) {
-  //     case 'spring' : return spring(easing, duration);
-  //     case 'cubicBezier' : return applyArguments(bezier, args);
-  //     case 'steps' : return applyArguments(steps, args);
-  //     default : return applyArguments(ease, args);
-  //   }
-  // }
-
   // 对帧做插值处理
-  public interpolations (keyframes: IObj[]): Interpolation[] {
+  private interpolations (keyframes: IObj[]): Interpolation[] {
     const interpolations: Interpolation[] = []
-    for (let i = 0; i < keyframes.length - 1; i++) {
-      // interpolations.push({
-      //   to: keyframes
-      // })
+    const keyFramesGroup = this.groupKeyFramesByProp(this.keyframes)
+    for (let [prop, frames] of keyFramesGroup) {
+      for (let i = 0; i < frames.length - 1; i++) {
+        const originFrame = frames[i]
+        const targetFrame = frames[i + 1]
+        const to = targetFrame.offset as number
+        const from = originFrame.offset as number
+        const originValue = originFrame[prop] as string
+        const targetValue = targetFrame[prop] as string
+        const startPoint = i === 0 ? -Infinity : from
+        const endPoint = i === frames.length - 2 ? Infinity : to
+        const easing = originFrame.easing as EASING_FUNCTION_NAME
+        const composite = (originFrame.composite || targetFrame.composite) as CompositeOperation
+        
+        interpolations.push({
+          to,
+          prop,
+          from,
+          easing,
+          endPoint,
+          composite,
+          startPoint,
+          originValue,
+          targetValue
+        })
+      }
     }
     return interpolations
   }
