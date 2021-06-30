@@ -6,7 +6,7 @@ export interface IEffectTiming {
     fill: FillMode
     iterationStart: number
     iterations: number
-    duration: string | number
+    duration: number
     direction: PlaybackDirection
     easing: string
 }
@@ -17,7 +17,7 @@ export interface IOptionalEffectTiming {
   fill?: FillMode
   iterationStart?: number
   iterations?: number
-  duration?: number | string
+  duration?: number
   direction?: PlaybackDirection
   easing?: string
 }

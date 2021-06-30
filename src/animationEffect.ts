@@ -1,11 +1,11 @@
 import { IOptionalEffectTiming, IEffectTiming, IComputedEffectTiming,
   KeyframeEffectOptions, IObj, Interpolation, EASING_FUNCTION_NAME } from './types'
-import { initialValues, EASING_FUNCTION_SET, SUPPORTED_EASING, PreserveProps } from './constant'
+import { EASING_FUNCTION_SET, SUPPORTED_EASING, PreserveProps } from './constant'
 import { CompositeOperation } from './enum'
 import { isNull } from './utils'
 
 export interface AnimationEffect {
-  // getTiming(): IEffectTiming
+  getTiming(): IEffectTiming
   getComputedTiming(): IComputedEffectTiming
   updateTiming (timing: IOptionalEffectTiming): void
 }
@@ -175,7 +175,7 @@ export class KeyframeEffect implements AnimationEffect {
   }
 
   // 对帧做插值处理
-  private interpolations (keyframes: IObj[]): Interpolation[] {
+  public interpolations (keyframes: IObj[]): Interpolation[] {
     const interpolations: Interpolation[] = []
     const keyFramesGroup = this.groupKeyFramesByProp(this.keyframes)
     for (let [prop, frames] of keyFramesGroup) {
@@ -207,9 +207,9 @@ export class KeyframeEffect implements AnimationEffect {
     return interpolations
   }
 
-  // public getTiming(): IEffectTiming {
-  //   return this.options
-  // }
+  public getTiming(): IEffectTiming {
+    throw new Error('Method not implemented.');
+  }
 
   public getComputedTiming(): IComputedEffectTiming {
     throw new Error('Method not implemented.');
