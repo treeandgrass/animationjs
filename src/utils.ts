@@ -1,4 +1,6 @@
 export const minMax = (target: number, min: number, max: number) => Math.min(Math.max(target, min), max)
+
+export const maxMin = (target: number, min: number, max: number) => Math.max(Math.min(target, min), max)
 /**
  * uuid
  * @returns

@@ -7,7 +7,7 @@ export const EffectTiming: IEffectTiming = {
   fill: FillMode.auto,
   iterationStart: 0.0,
   iterations: 1.0,
-  duration: 'auto',
+  duration: 0,
   direction: PlaybackDirection.normal,
   easing: 'linear'
 }
@@ -88,3 +88,5 @@ export const EASING_FUNCTION_SET = {
 export const SUPPORTED_EASING = ['linear', 'ease', 'ease-in', 'ease-out', 'ease-in-out', 'spring']
 
 export const PreserveProps = ['easing', 'offset', 'composite']
+
+export const UNRESOLVED = null

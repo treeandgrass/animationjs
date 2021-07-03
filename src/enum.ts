@@ -15,3 +15,8 @@ export enum AnimationReplaceState { 'active', 'removed', 'persisted' }
 export enum AnimationPlayState { 'idle', 'running', 'paused', 'finished' }
 
 export enum CompositeOperation { REPLACE = 'replace', ADD = 'add', ACCU = 'accumulate' }
+
+export enum ICurrentDirection {
+  forwards = 'forwards',
+  reverse = 'reverse'
+}
