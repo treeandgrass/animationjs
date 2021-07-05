@@ -4,14 +4,6 @@ let tick = false
 let isInLoop = false
 const animationMap = new Map<string, Animation>()
 
-export const registry = (animation: Animation) => {
-  animationMap.set(animation.id, animation)
-}
-
-export const unRegistry = (animation: Animation) => {
-  animationMap.delete(animation.id)
-}
-
 const runLoop = () => {
   isInLoop = true
   requestAnimationFrame((time: number) => {
@@ -40,3 +32,12 @@ export const stop = () => {
 export const clearAnimations = () => {
   animationMap.clear()
 }
+
+export const registry = (animation: Animation) => {
+  animationMap.set(animation.id, animation)
+}
+
+export const unRegistry = (animation: Animation) => {
+  animationMap.delete(animation.id)
+}
+

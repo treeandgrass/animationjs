@@ -1,9 +1,5 @@
 export class AnimationElement {
-  private set (key: string) {
-
-  }
-
-  private get (key: string) {
+  public commit (seek: number, property: string) {
 
   }
 }
