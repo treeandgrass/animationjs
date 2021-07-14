@@ -1,8 +1,10 @@
-import { IOptionalEffectTiming, IEffectTiming, IComputedEffectTiming,
-  KeyframeEffectOptions, IObj, Interpolation, EASING_FUNCTION_NAME } from './types'
-import { EASING_FUNCTION_SET, SUPPORTED_EASING, PreserveProps } from './constant'
-import { CompositeOperation } from './enum'
 import { isNull } from './utils'
+import { CompositeOperation } from './enum'
+import { AnimationElement } from './target/element'
+import { DOM } from './target/dom'
+import { EASING_FUNCTION_SET, SUPPORTED_EASING, PreserveProps } from './constant'
+import { IOptionalEffectTiming, IEffectTiming, IComputedEffectTiming,
+  KeyframeEffectOptions, IObj, Interpolation, EASING_FUNCTION_NAME, ICommit } from './types'
 
 export interface AnimationEffect {
   getTiming(): IEffectTiming
@@ -14,8 +16,11 @@ export class KeyframeEffect implements AnimationEffect {
   public target: Element
   public pseudoElement: string | undefined
   public composite: CompositeOperation = CompositeOperation.REPLACE
+
   private keyframes: IObj[]
   private options: KeyframeEffectOptions
+  private interpolations: Interpolation[] = []
+  private effectTarget: AnimationElement
   
   constructor(target: Element, keyframes: IObj[] | IObj, options: KeyframeEffectOptions) {
     this.target = target
@@ -23,8 +28,10 @@ export class KeyframeEffect implements AnimationEffect {
     if (options.composite) {
       this.composite = options.composite
     }
+    this.effectTarget = new DOM(this.target)
     this.pseudoElement = options.pseudoElement
     this.keyframes = this.normalizeKeyFrames(keyframes)
+    this.interpolations = this.makeInterpolations(this.keyframes)
   }
 
   private groupKeyFramesByProp (normKeyFrames: IObj[]) {
@@ -175,9 +182,9 @@ export class KeyframeEffect implements AnimationEffect {
   }
 
   // 对帧做插值处理
-  public interpolations (keyframes: IObj[]): Interpolation[] {
+  private makeInterpolations (keyframes: IObj[]): Interpolation[] {
     const interpolations: Interpolation[] = []
-    const keyFramesGroup = this.groupKeyFramesByProp(this.keyframes)
+    const keyFramesGroup = this.groupKeyFramesByProp(keyframes)
     for (let [prop, frames] of keyFramesGroup) {
       for (let i = 0; i < frames.length - 1; i++) {
         const originFrame = frames[i]
@@ -226,5 +233,23 @@ export class KeyframeEffect implements AnimationEffect {
 
   public setKeyframes(keyframes: IObj[] | IObj) {
     this.keyframes = this.normalizeKeyFrames(keyframes)
+  }
+
+  public commit (progress: number | undefined) {
+    if (progress) {
+      const commits: ICommit[] = []
+      this.interpolations.filter((interpolation) => {
+        return progress >= interpolation.startPoint && progress < interpolation.endPoint
+      }).forEach((interpolation) => {
+        const offset = progress - interpolation.from
+        const duration = interpolation.to - interpolation.from
+        const frameSeekValue = duration === 0 ? 0 : offset / duration
+        commits.push({
+          interpolation,
+          seek: frameSeekValue
+        })
+      })
+      this.effectTarget.apply(commits)
+    }
   }
 }

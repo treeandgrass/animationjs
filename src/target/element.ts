@@ -1,5 +1,4 @@
-export class AnimationElement {
-  public commit (seek: number, property: string) {
-
-  }
+import { Interpolation, ICommit } from '../types'
+export interface AnimationElement {
+  apply (commit: ICommit[]): void
 }

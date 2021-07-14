@@ -62,3 +62,8 @@ export interface Interpolation {
   easing: EASING_FUNCTION_NAME
   composite: CompositeOperation
 }
+
+export interface ICommit {
+  seek: number
+  interpolation: Interpolation
+}
