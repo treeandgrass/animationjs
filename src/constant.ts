@@ -82,7 +82,13 @@ export const initialValues = {
 }
 
 export const EASING_FUNCTION_SET = {
-  linear: 'linear'
+  ease: 'ease',
+  linear: 'linear',
+  spring: 'spring',
+  easeIn: 'ease-in',
+  easeOut: 'ease-out',
+  bezier: 'cubic-bezier',
+  easeInOut: 'ease-in-out'
 }
 
 export const SUPPORTED_EASING = ['linear', 'ease', 'ease-in', 'ease-out', 'ease-in-out', 'spring']

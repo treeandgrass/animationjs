@@ -242,7 +242,7 @@ export class KeyframeEffect implements AnimationEffect {
   public commit (seekTime: number | null, playbackRate: number) {
     const progress = calculateDirectedProcessFromLocalTime(seekTime, playbackRate, this.getTiming())
     if (progress) {
-      const eased = effect(this.options.easing as string, progress)
+      const eased = progress
       const commits: ICommit[] = []
       this.interpolations.filter((interpolation) => {
         return eased >= interpolation.startPoint && eased < interpolation.endPoint

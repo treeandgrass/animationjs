@@ -67,3 +67,5 @@ export interface ICommit {
   seek: number
   interpolation: Interpolation
 }
+
+export type EASE_FUNC = (t: number) => void
