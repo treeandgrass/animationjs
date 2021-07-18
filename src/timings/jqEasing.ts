@@ -67,10 +67,11 @@ export const easeOutCirc = (t: number, b: number, c: number, d: number) => {
   return c * Math.sqrt(1 - (t = t / d - 1) * t) + b
 }
 
-// easeInOutCirc: function (x, t, b, c, d) {
-//   if ((t/=d/2) < 1) return -c/2 * (Math.sqrt(1 - t*t) - 1) + b;
+// export const easeInOutCirc = (x, t, b, c, d) => {
+//   if ((t / = d / 2) < 1) return -c/2 * (Math.sqrt(1 - t*t) - 1) + b;
 //   return c/2 * (Math.sqrt(1 - (t-=2)*t) + 1) + b;
-// },
+// }
+
 // easeInElastic: function (x, t, b, c, d) {
 //   var s=1.70158;var p=0;var a=c;
 //   if (t==0) return b;  if ((t/=d)==1) return b+c;  if (!p) p=d*.3;

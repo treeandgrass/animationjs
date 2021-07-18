@@ -1,4 +1,4 @@
-import { Interpolation, ICommit } from '../types'
+import { ICommit } from '../types'
 export interface AnimationElement {
   apply (commit: ICommit[]): void
 }

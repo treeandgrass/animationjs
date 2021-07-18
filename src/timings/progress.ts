@@ -28,16 +28,16 @@ const calPhaseState = (localTime: number | null, activeDuration: number, timing:
  * https://drafts.csswg.org/web-animations/#calculating-the-active-time
  * @returns 
  */
-const calculatingTheActiveTime = (timing: IEffectTiming, activeDuration: number, localTime: number, phaseState: TimelinePhase) => {
+const calculatingTheActiveTime = (timing: IEffectTiming, activeDuration: number, localTime: number | null, phaseState: TimelinePhase) => {
   if (phaseState === TimelinePhase.before) {
     if (timing.fill === FillMode.backwards || timing.fill === FillMode.both) {
-      return Math.max(localTime - timing.delay, 0)
+      return Math.max(localTime as number - timing.delay, 0)
     }
   } else if (phaseState === TimelinePhase.active) {
-    return localTime - timing.delay
+    return localTime as number - timing.delay
   } else if (phaseState === TimelinePhase.after) {
     if (timing.fill === FillMode.both || timing.fill === FillMode.backwards) {
-      return maxMin(localTime - timing.delay, activeDuration, 0)
+      return maxMin(<number>localTime - timing.delay, activeDuration, 0)
     }
   }
   return UNRESOLVED
@@ -149,7 +149,7 @@ const calculatingTheDirectedProgress = (simpleIterationProgress: number | null, 
  * @param localTime 
  * @returns 
  */
-export const calculateDirectedProcessFromLocalTime = (localTime: number, playbackRate: number, timing: IEffectTiming): number | null => {
+export const calculateDirectedProcessFromLocalTime = (localTime: number | null, playbackRate: number, timing: IEffectTiming): number | null => {
   const activeDuration = calculateDuration(timing, playbackRate)
   const phaseState = calPhaseState(localTime, activeDuration, timing)
   const activeTime = calculatingTheActiveTime(timing, activeDuration, localTime, phaseState)

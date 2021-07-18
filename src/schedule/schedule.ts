@@ -8,7 +8,7 @@ const runLoop = () => {
   isInLoop = true
   requestAnimationFrame((time: number) => {
     for (let [_key, animation] of animationMap) {
-      animation.tick(time)
+      animation._tick(time)
     }
     if (tick && animationMap.size > 0) {
       runLoop()

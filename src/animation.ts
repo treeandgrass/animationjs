@@ -3,36 +3,40 @@ import { UNRESOLVED } from './constant'
 import { Event } from './event/eventTarget'
 import {  KeyframeEffect } from './animationEffect'
 import { AnimationEffect } from './animationEffect'
-import { AnimationTimeline } from './animationTimeline'
-import { AnimationPlayState, AnimationReplaceState } from './enum'
+import { AnimationPlayState } from './enum'
 import { registry, schedule, unRegistry } from './schedule/schedule'
 
 export class Animation extends Event {
   public id: string
-  public timeline: AnimationTimeline | null = null;
   public startTime: number | null = UNRESOLVED
-  private currentTime: number | null = UNRESOLVED
-  public  playbackRate: number = 0
+  public  playbackRate: number = 1
   public playState: AnimationPlayState = AnimationPlayState.idle
-  private replaceState!: AnimationReplaceState
-  private pending!: boolean
-  private ready!: Promise<Animation>
-  private finished!: Promise<Animation>
   public effect: KeyframeEffect
+  private currentTime: number = 0
 
-  constructor (effect: AnimationEffect, timeline: AnimationTimeline | null) {
+  constructor (effect: AnimationEffect) {
     super()
     this.id = UUIdV4()
-    this.timeline = timeline
     this.effect = effect as KeyframeEffect
   }
 
   cancel () {
-    //
+    if (!this.effect) {
+      return
+    }
+    unRegistry(this)
+    this.currentTime = 0
+    this.playState = AnimationPlayState.idle
   }
 
   finish () {
-    this.playState = AnimationPlayState.finished
+    if (this.playState === AnimationPlayState.idle) {
+      return
+    }
+    const timing = this.effect.getTiming()
+    this.currentTime = this.playbackRate > 0 ? timing.duration : 0
+    this.startTime = timing.duration - this.currentTime
+    schedule()
   }
 
   play () {
@@ -42,40 +46,37 @@ export class Animation extends Event {
 
   pause () {
     unRegistry(this)
+    this.startTime = UNRESOLVED
     this.playState = AnimationPlayState.paused
   }
 
   updatePlaybackRate (playbackRate: number) {
-    this.playbackRate = playbackRate
+    if (this.playbackRate === playbackRate) {
+      return
+    }
+    if (this.playState !== AnimationPlayState.idle && this.playState !== AnimationPlayState.paused) {
+      this.playbackRate = playbackRate
+      this.play()
+    }
   }
 
   reverse () {
     this.playbackRate = -this.playbackRate
+    this.play()
   }
 
-  persist () {
-
-  }
-
-  public tick (localTime: number) {
-    if (this.timeline && this.timeline.currentTime !== localTime) {
-      this.timeline.currentTime = localTime
-    }
+  public _tick (localTime: number) {
     if (this.currentTime === localTime) {
       return
     }
     if (this.playState !== AnimationPlayState.idle && this.playState !== AnimationPlayState.paused) {
       if (this.startTime === UNRESOLVED) {
-        this.startTime = localTime - (this.currentTime as number) / this.playbackRate
+        this.startTime = localTime - this.currentTime / this.playbackRate
       }
       this.currentTime = (localTime - this.startTime) * this.playbackRate
       if (this.playState === AnimationPlayState.running) {
-        this.effect.commit(this.currentTime)
+        this.effect.commit(this.currentTime, this.playbackRate)
       }
     }
-  }
-
-  commitStyles () {
-
   }
 }

@@ -2,10 +2,11 @@ import { isNull } from './utils'
 import { CompositeOperation } from './enum'
 import { AnimationElement } from './target/element'
 import { DOM } from './target/dom'
+import { calculateDirectedProcessFromLocalTime } from './timings/progress'
+import { effect } from './timings/effect'
 import { EASING_FUNCTION_SET, SUPPORTED_EASING, PreserveProps } from './constant'
 import { IOptionalEffectTiming, IEffectTiming, IComputedEffectTiming,
   KeyframeEffectOptions, IObj, Interpolation, EASING_FUNCTION_NAME, ICommit } from './types'
-
 export interface AnimationEffect {
   getTiming(): IEffectTiming
   getComputedTiming(): IComputedEffectTiming
@@ -27,6 +28,9 @@ export class KeyframeEffect implements AnimationEffect {
     this.options = options
     if (options.composite) {
       this.composite = options.composite
+    }
+    if (!options.easing) {
+      options.easing = 'linear'
     }
     this.effectTarget = new DOM(this.target)
     this.pseudoElement = options.pseudoElement
@@ -235,13 +239,15 @@ export class KeyframeEffect implements AnimationEffect {
     this.keyframes = this.normalizeKeyFrames(keyframes)
   }
 
-  public commit (progress: number | undefined) {
+  public commit (seekTime: number | null, playbackRate: number) {
+    const progress = calculateDirectedProcessFromLocalTime(seekTime, playbackRate, this.getTiming())
     if (progress) {
+      const eased = effect(this.options.easing as string, progress)
       const commits: ICommit[] = []
       this.interpolations.filter((interpolation) => {
-        return progress >= interpolation.startPoint && progress < interpolation.endPoint
+        return eased >= interpolation.startPoint && eased < interpolation.endPoint
       }).forEach((interpolation) => {
-        const offset = progress - interpolation.from
+        const offset = eased - interpolation.from
         const duration = interpolation.to - interpolation.from
         const frameSeekValue = duration === 0 ? 0 : offset / duration
         commits.push({

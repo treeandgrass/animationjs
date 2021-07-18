@@ -1,4 +1,4 @@
-import { Interpolation, ICommit } from '../types'
+import { ICommit } from '../types'
 import { AnimationElement } from './element'
 export class DOM implements AnimationElement {
   private target: Element | null = null
