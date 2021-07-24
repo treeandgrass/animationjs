@@ -1,13 +1,13 @@
 import { isNull } from './utils'
 import { DOM } from './target/dom'
 import { effect } from './timings/effect'
-import { CompositeOperation } from './enum'
+import { CompositeOperation, PlaybackDirection } from './enum'
 import { linear } from './timings/bezierEasing'
 import { AnimationElement } from './target/element'
 import { calculateDirectedProcessFromLocalTime } from './timings/progress'
-import { EASING_FUNCTION_SET, SUPPORTED_EASING, PreserveProps } from './constant'
 import { IOptionalEffectTiming, IEffectTiming, IComputedEffectTiming, EASE_FUNC,
-  KeyframeEffectOptions, IObj, Interpolation, EASING_FUNCTION_NAME, ICommit } from './types'
+  KeyframeEffectOptions, IObj, Interpolation, ICommit } from './types'
+import { EASING_FUNCTION_SET, SUPPORTED_EASING, PreserveProps, InitializeComputedTiming, InitializeEffectTiming } from './constant'
 export interface AnimationEffect {
   getTiming(): IEffectTiming
   getComputedTiming(): IComputedEffectTiming
@@ -24,6 +24,8 @@ export class KeyframeEffect implements AnimationEffect {
   private interpolations: Interpolation[] = []
   private effectTarget: AnimationElement
   private effect: EASE_FUNC = linear
+  private _timing!: IEffectTiming
+  private _computedTiming: IComputedEffectTiming
   
   constructor(target: Element, keyframes: IObj[] | IObj, options: KeyframeEffectOptions) {
     this.target = target
@@ -34,6 +36,8 @@ export class KeyframeEffect implements AnimationEffect {
     if (!options.easing) {
       options.easing = 'linear'
     }
+    this._timing = this.makeTiming(options)
+    this._computedTiming = this.makeComputedTiming(options)
     this.effect = effect(options.easing)
     this.effectTarget = new DOM(this.target)
     this.pseudoElement = options.pseudoElement
@@ -55,6 +59,16 @@ export class KeyframeEffect implements AnimationEffect {
       })
     })
     return groupKeyFrames
+  }
+
+  private makeTiming (options: KeyframeEffectOptions) {
+    const timings = InitializeEffectTiming
+    return timings
+  }
+
+  private makeComputedTiming (options: KeyframeEffectOptions) {
+    const timings = InitializeComputedTiming
+    return timings
   }
 
   private normalizeKeyFrames (keyframes: IObj[] | IObj): IObj[] {
@@ -223,11 +237,11 @@ export class KeyframeEffect implements AnimationEffect {
   }
 
   public getTiming(): IEffectTiming {
-    throw new Error('Method not implemented.');
+    return Object.assign({}, this._timing)
   }
 
   public getComputedTiming(): IComputedEffectTiming {
-    throw new Error('Method not implemented.');
+    return Object.assign({}, this._computedTiming)
   }
 
   public updateTiming(timing: IOptionalEffectTiming): void {
@@ -244,7 +258,7 @@ export class KeyframeEffect implements AnimationEffect {
   }
 
   public commit (seekTime: number | null, playbackRate: number) {
-    const progress = calculateDirectedProcessFromLocalTime(seekTime, playbackRate, this.getTiming())
+    const progress = calculateDirectedProcessFromLocalTime(seekTime, playbackRate, this._computedTiming)
     if (progress) {
       const commits: ICommit[] = []
       const eased = this.effect(progress)

@@ -6,7 +6,7 @@ export interface IEffectTiming {
     fill: FillMode
     iterationStart: number
     iterations: number
-    duration: number
+    duration: string | number
     direction: PlaybackDirection
     easing: string
 }
@@ -28,14 +28,14 @@ export interface IComputedEffectTiming {
   fill: FillMode
   iterationStart: number
   iterations: number
-  duration: number | string
+  duration: number
   direction: PlaybackDirection
   easing: string
   endTime: number
   activeDuration: number
-  localTime: number
-  progress: number
-  currentIteration: number
+  localTime: number | null
+  progress: number | null
+  currentIteration: number | null
 }
 
 export type IEasingFunction = (t: number) => number

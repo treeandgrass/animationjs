@@ -8,7 +8,7 @@ export const play = (id: string) => {
   const duration = 5000
   const value = 300
 
-  const target = document.getElementById(id)
+  const target = document.getElementById(id) as HTMLDivElement
   let current = 0
   let start = 0
   const run = (t: number) => {

@@ -1,6 +1,6 @@
 import { maxMin } from '../utils'
 import { UNRESOLVED } from '../constant'
-import { IEffectTiming } from '../types'
+import { IComputedEffectTiming } from '../types'
 import { TimelinePhase, FillMode, PlaybackDirection, ICurrentDirection } from '../enum'
 
 /**
@@ -10,7 +10,7 @@ import { TimelinePhase, FillMode, PlaybackDirection, ICurrentDirection } from '.
    * after phase
    * none of these phase
    */
-const calPhaseState = (localTime: number | null, activeDuration: number, timing: IEffectTiming): TimelinePhase => {
+const calPhaseState = (localTime: number | null, activeDuration: number, timing: IComputedEffectTiming): TimelinePhase => {
   if (localTime === UNRESOLVED) {
     return TimelinePhase.inactive
   }
@@ -28,7 +28,7 @@ const calPhaseState = (localTime: number | null, activeDuration: number, timing:
  * https://drafts.csswg.org/web-animations/#calculating-the-active-time
  * @returns 
  */
-const calculatingTheActiveTime = (timing: IEffectTiming, activeDuration: number, localTime: number | null, phaseState: TimelinePhase) => {
+const calculatingTheActiveTime = (timing: IComputedEffectTiming, activeDuration: number, localTime: number | null, phaseState: TimelinePhase) => {
   if (phaseState === TimelinePhase.before) {
     if (timing.fill === FillMode.backwards || timing.fill === FillMode.both) {
       return Math.max(localTime as number - timing.delay, 0)
@@ -47,7 +47,7 @@ const calculatingTheActiveTime = (timing: IEffectTiming, activeDuration: number,
  * Calculating the overall progress
  * https://drafts.csswg.org/web-animations/#calculating-the-overall-progress
  */
-const calculatingTheOverallProgress = (activeTime: number | null, activeDuration: number, phaseState: TimelinePhase, timing: IEffectTiming) => {
+const calculatingTheOverallProgress = (activeTime: number | null, activeDuration: number, phaseState: TimelinePhase, timing: IComputedEffectTiming) => {
   if (activeTime === UNRESOLVED) {
     return UNRESOLVED
   }
@@ -70,7 +70,7 @@ const calculatingTheOverallProgress = (activeTime: number | null, activeDuration
  * @param timing 
  * @returns 
  */
-const calculatingSimpleIterationProgress = (overallProgress: number | null, phaseState: TimelinePhase, activeTime: number | null, activeDuration: number, timing: IEffectTiming) => {
+const calculatingSimpleIterationProgress = (overallProgress: number | null, phaseState: TimelinePhase, activeTime: number | null, activeDuration: number, timing: IComputedEffectTiming) => {
   if (overallProgress === UNRESOLVED) {
     return UNRESOLVED
   }
@@ -95,14 +95,14 @@ const calculatingSimpleIterationProgress = (overallProgress: number | null, phas
 }
 
 // https://drafts.csswg.org/web-animations/#calculating-the-active-duration
-const calculateDuration = (timing: IEffectTiming, playbackRate: number) => {
+const calculateDuration = (timing: IComputedEffectTiming, playbackRate: number) => {
   if (timing.duration === 0 || timing.iterations === 0) {
     return 0;
   }
   return (timing.duration * timing.iterations) / playbackRate
 }
 
-const calculatingTheCurrentIteration = (activeTime: number | null, phaseState: TimelinePhase, overallProgress: number | null, simpleIterationProgress: number | null, timing: IEffectTiming) => {
+const calculatingTheCurrentIteration = (activeTime: number | null, phaseState: TimelinePhase, overallProgress: number | null, simpleIterationProgress: number | null, timing: IComputedEffectTiming) => {
   if (activeTime === UNRESOLVED) {
     return UNRESOLVED
   }
@@ -121,7 +121,7 @@ const calculatingTheCurrentIteration = (activeTime: number | null, phaseState: T
  * @param timing 
  * @returns 
  */
-const calculatingTheDirectedProgress = (simpleIterationProgress: number | null, currentIteration: number | null, timing: IEffectTiming) => {
+const calculatingTheDirectedProgress = (simpleIterationProgress: number | null, currentIteration: number | null, timing: IComputedEffectTiming) => {
   if (simpleIterationProgress === UNRESOLVED) {
     return UNRESOLVED
   }
@@ -149,7 +149,7 @@ const calculatingTheDirectedProgress = (simpleIterationProgress: number | null, 
  * @param localTime 
  * @returns 
  */
-export const calculateDirectedProcessFromLocalTime = (localTime: number | null, playbackRate: number, timing: IEffectTiming): number | null => {
+export const calculateDirectedProcessFromLocalTime = (localTime: number | null, playbackRate: number, timing: IComputedEffectTiming): number | null => {
   const activeDuration = calculateDuration(timing, playbackRate)
   const phaseState = calPhaseState(localTime, activeDuration, timing)
   const activeTime = calculatingTheActiveTime(timing, activeDuration, localTime, phaseState)

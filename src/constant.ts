@@ -1,23 +1,27 @@
-import { IEffectTiming, IOptionalEffectTiming } from './types'
 import { FillMode, PlaybackDirection } from './enum'
 
-export const EffectTiming: IEffectTiming = {
+export const InitializeComputedTiming = {
   delay: 0,
   endDelay: 0,
-  fill: FillMode.auto,
+  fill: FillMode.none,
   iterationStart: 0.0,
   iterations: 1.0,
   duration: 0,
+  endTime: 0,
   direction: PlaybackDirection.normal,
-  easing: 'linear'
+  easing: 'linear',
+  activeDuration: 0,
+  localTime: null,
+  progress: null,
+  currentIteration: null
 }
 
-export const OptionalEffectTiming = {
+export const InitializeEffectTiming = {
   delay: 0,
   endDelay: 0,
   fill: FillMode.auto,
   iterationStart: 0.0,
-  iterations: 1.0,
+  iterations: 1,
   duration: 'auto',
   direction: PlaybackDirection.normal,
   easing: 'linear'

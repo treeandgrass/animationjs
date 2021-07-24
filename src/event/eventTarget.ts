@@ -11,7 +11,7 @@ export class Event {
 
   emit (eventName: string, ...args: any[]) {
     if (this.eventsMap.has(eventName)) {
-      const funcs = this.eventsMap.get(eventName)
+      const funcs = this.eventsMap.get(eventName) || []
       funcs.forEach((func) => {
         func(args)
       })

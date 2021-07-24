@@ -33,7 +33,7 @@ export class Animation extends Event {
     if (this.playState === AnimationPlayState.idle) {
       return
     }
-    const timing = this.effect.getTiming()
+    const timing = this.effect.getComputedTiming()
     this.currentTime = this.playbackRate > 0 ? timing.duration : 0
     this.startTime = timing.duration - this.currentTime
     schedule()
