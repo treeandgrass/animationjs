@@ -2,7 +2,7 @@ import { Animation } from '../animation'
 
 let tick = false
 let isInLoop = false
-const animationMap = new Map<string, Animation>()
+export const animationMap = new Map<string, Animation>()
 
 const runLoop = () => {
   isInLoop = true

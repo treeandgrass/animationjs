@@ -48,8 +48,9 @@ export interface IObj {
   [key: string]: string | number | string[] | number[]
 }
 
+export type EASE_FUNC = (t: number) => number
 
-export type EASING_FUNCTION_NAME = 'linear' | 'ease' | 'ease-in'| 'ease-out' | 'ease-in-out' | 'spring'
+export type EASING_FUNCTION_NAME = 'linear' | 'ease' | 'ease-in'| 'ease-out' | 'ease-in-out' | 'spring' | 'step'
 
 export interface Interpolation {
   to: number
@@ -59,7 +60,7 @@ export interface Interpolation {
   endPoint: number
   originValue: string
   targetValue: string
-  easing: EASING_FUNCTION_NAME
+  easing_func: EASE_FUNC
   composite: CompositeOperation
 }
 
@@ -68,4 +69,4 @@ export interface ICommit {
   interpolation: Interpolation
 }
 
-export type EASE_FUNC = (t: number) => void
+export type IFromWithTo = boolean | number | boolean[] | number[]

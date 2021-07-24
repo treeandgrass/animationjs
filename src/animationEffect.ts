@@ -1,11 +1,12 @@
 import { isNull } from './utils'
-import { CompositeOperation } from './enum'
-import { AnimationElement } from './target/element'
 import { DOM } from './target/dom'
-import { calculateDirectedProcessFromLocalTime } from './timings/progress'
 import { effect } from './timings/effect'
+import { CompositeOperation } from './enum'
+import { linear } from './timings/bezierEasing'
+import { AnimationElement } from './target/element'
+import { calculateDirectedProcessFromLocalTime } from './timings/progress'
 import { EASING_FUNCTION_SET, SUPPORTED_EASING, PreserveProps } from './constant'
-import { IOptionalEffectTiming, IEffectTiming, IComputedEffectTiming,
+import { IOptionalEffectTiming, IEffectTiming, IComputedEffectTiming, EASE_FUNC,
   KeyframeEffectOptions, IObj, Interpolation, EASING_FUNCTION_NAME, ICommit } from './types'
 export interface AnimationEffect {
   getTiming(): IEffectTiming
@@ -22,6 +23,7 @@ export class KeyframeEffect implements AnimationEffect {
   private options: KeyframeEffectOptions
   private interpolations: Interpolation[] = []
   private effectTarget: AnimationElement
+  private effect: EASE_FUNC = linear
   
   constructor(target: Element, keyframes: IObj[] | IObj, options: KeyframeEffectOptions) {
     this.target = target
@@ -32,6 +34,7 @@ export class KeyframeEffect implements AnimationEffect {
     if (!options.easing) {
       options.easing = 'linear'
     }
+    this.effect = effect(options.easing)
     this.effectTarget = new DOM(this.target)
     this.pseudoElement = options.pseudoElement
     this.keyframes = this.normalizeKeyFrames(keyframes)
@@ -199,17 +202,18 @@ export class KeyframeEffect implements AnimationEffect {
         const targetValue = targetFrame[prop] as string
         const startPoint = i === 0 ? -Infinity : from
         const endPoint = i === frames.length - 2 ? Infinity : to
-        const easing = originFrame.easing as EASING_FUNCTION_NAME
+        const easing = originFrame.easing
+        const easing_func = effect(originFrame.easing as string)
         const composite = (originFrame.composite || targetFrame.composite) as CompositeOperation
         
         interpolations.push({
           to,
           prop,
           from,
-          easing,
           endPoint,
           composite,
           startPoint,
+          easing_func,
           originValue,
           targetValue
         })
@@ -242,8 +246,8 @@ export class KeyframeEffect implements AnimationEffect {
   public commit (seekTime: number | null, playbackRate: number) {
     const progress = calculateDirectedProcessFromLocalTime(seekTime, playbackRate, this.getTiming())
     if (progress) {
-      const eased = progress
       const commits: ICommit[] = []
+      const eased = this.effect(progress)
       this.interpolations.filter((interpolation) => {
         return eased >= interpolation.startPoint && eased < interpolation.endPoint
       }).forEach((interpolation) => {

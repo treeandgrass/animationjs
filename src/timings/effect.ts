@@ -2,6 +2,7 @@ import { Spring } from './spring'
 import { EASE_FUNC } from '../types'
 import { minMax, isNull } from '../utils'
 import { EASING_FUNCTION_SET } from '../constant'
+import { stepStart, stepEnd, stepMiddle, step } from './step'
 import { bezier, ease, easeIn, easeInOut, easeOut, linear } from './bezierEasing'
 
 
@@ -17,6 +18,12 @@ export const effect = (easing: string): EASE_FUNC => {
     return easeInOut
   } else if (easing === EASING_FUNCTION_SET.easeOut) {
     return easeOut
+  } else if (easing === EASING_FUNCTION_SET.stepStart) {
+    return stepStart
+  } else if (easing === EASING_FUNCTION_SET.stepEnd) {
+    return stepEnd
+  } else if (easing === EASING_FUNCTION_SET.stepMiddle) {
+    return stepMiddle
   }
 
   // parse ease name and params
@@ -41,9 +48,16 @@ export const effect = (easing: string): EASE_FUNC => {
       return spring.solve(t)
     }
   }
+
   // cubic-bezier
   if (easeName === EASING_FUNCTION_SET.bezier) {
     return bezier.apply(null, params as any)
   }
+
+  // step function
+  if (easeName === EASING_FUNCTION_SET.step) {
+    return step.apply(null, params as any)
+  }
+  // linear
   return linear
 }

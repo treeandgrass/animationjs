@@ -1,5 +1,6 @@
 import { ICommit } from '../types'
 import { AnimationElement } from './element'
+import { interpolate } from '../utils'
 export class DOM implements AnimationElement {
   private target: Element | null = null
   
@@ -7,7 +8,13 @@ export class DOM implements AnimationElement {
     this.target = target
   }
 
-  apply (commit: ICommit[]) {
-
+  apply (commits: ICommit[]) {
+    commits.forEach((commit) => {
+      const { interpolation, seek } = commit
+      const { easing_func, targetValue, originValue } = interpolation
+      const processed = easing_func(commit.seek)
+      // interpolate(originValue)
+      console.log(processed)
+    })
   }
 }
