@@ -1,4 +1,5 @@
 import { FillMode, PlaybackDirection } from './enum'
+import { IEffectTiming } from './types'
 
 export const InitializeComputedTiming = {
   delay: 0,
@@ -16,7 +17,7 @@ export const InitializeComputedTiming = {
   currentIteration: null
 }
 
-export const InitializeEffectTiming = {
+export const InitializeEffectTiming: IEffectTiming = {
   delay: 0,
   endDelay: 0,
   fill: FillMode.auto,
