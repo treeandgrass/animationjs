@@ -6,9 +6,19 @@
 */
 export enum TimelinePhase { 'inactive', 'before', 'active', 'after' }
 
-export enum FillMode { 'none', 'forwards', 'backwards', 'both', 'auto' }
+export enum FillMode { 
+  none = 'none',
+  forwards = 'forwards',
+  backwards = 'backwards',
+  both = 'both',
+  auto = 'auto' 
+}
 
-export enum PlaybackDirection { 'normal', 'reverse', 'alternate', 'alternate-reverse' }
+export enum PlaybackDirection { 
+  normal = 'normal',
+  reverse = 'reverse',
+  alternate = 'alternate',
+  alternateReverse = 'alternate-reverse' }
 
 export enum AnimationReplaceState { 'active', 'removed', 'persisted' }
 

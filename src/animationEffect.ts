@@ -1,7 +1,7 @@
 import { isNull } from './utils'
 import { DOM } from './target/dom'
 import { effect } from './timings/effect'
-import { CompositeOperation, PlaybackDirection } from './enum'
+import { CompositeOperation, FillMode, PlaybackDirection } from './enum'
 import { linear } from './timings/bezierEasing'
 import { AnimationElement } from './target/element'
 import { calculateDirectedProcessFromLocalTime } from './timings/progress'
@@ -62,13 +62,88 @@ export class KeyframeEffect implements AnimationEffect {
   }
 
   private makeTiming (options: KeyframeEffectOptions) {
-    const timings = InitializeEffectTiming
+    const timings = Object.assign({}, InitializeEffectTiming)
+    const keys = ['delay', 'direction', 'duration', 'easing', 'endDelay', 'fill',
+      'iterationStart', 'iterations']
+    keys.forEach((key) => {
+      if (key === 'duration' && typeof options[key] === 'number') {
+        const duration = options[key] as number
+        if (duration >= 0) {
+          timings.duration = duration
+        } else {
+          throw new Error('KeyframeEffect: duration must be non-negative or auto')
+        }
+      }
+      if (key === 'delay' && typeof options[key] === 'number') {
+        const delay = options[key] as number
+        if (!isFinite(delay)) {
+          throw new Error('KeyframeEffect: delay must be finite')
+        }
+        if (delay >= 0) {
+          timings.delay = delay
+        }
+      }
+      if (key === 'endDelay' && typeof options[key] === 'number') {
+        const endDelay = options[key] as number
+        if (!isFinite(endDelay)) {
+          throw new Error('KeyframeEffect: endDelay must be finite')
+        }
+        if (endDelay >= 0) {
+          timings.endDelay = endDelay
+        }
+      }
+      if (key === 'easing') {
+        if (options[key] !== 'string') {
+          throw new Error(`KeyframeEffect: ${options[key]} is not a valid value for easing`)
+        } else {
+          timings[key] = options[key] as string
+        }
+      }
+      if (key === 'fill') {
+        const fill = options[key] as FillMode
+        if (fill !== FillMode.none && fill !== FillMode.auto &&
+          fill !== FillMode.backwards && fill !== FillMode.both && fill !== FillMode.forwards) {
+          throw new Error(`KeyframeEffect: ${options[key]} is not a valid value for fill`)
+        } else {
+          timings.fill = fill
+        }
+      }
+      if (key === 'direction') {
+        const direction = options[key] as PlaybackDirection
+        if (direction !== PlaybackDirection.alternate && direction !== PlaybackDirection.alternateReverse
+          && direction !== PlaybackDirection.normal && direction !== PlaybackDirection.reverse) {
+          throw new Error(`KeyframeEffect: ${options[key]} is not a valid value for direction`)
+        } else {
+          timings.direction = direction
+        }
+      }
+      if (key === 'iterations') {
+        const iterations = options[key]
+        if (typeof iterations !== 'number' || iterations < 0) {
+          throw new Error(`KeyframeEffect: ${options[key]} is not a valid value for iterations`)
+        } else {
+          timings[key] = iterations
+        }
+      }
+      if (key === 'iterationStart') {
+        const iterationStart = options[key] as number
+        if (!isFinite(iterationStart)) {
+          throw new Error('KeyframeEffect: The provided double value is non-finite')
+        } else if (iterationStart > 0) {
+          timings[key] = iterationStart
+        }
+      }
+    })
     return timings
   }
 
   private makeComputedTiming (options: KeyframeEffectOptions) {
-    const timings = InitializeComputedTiming
-    return timings
+    const cloneTiming = this.getTiming()
+    if (cloneTiming.duration === 'auto') {
+      cloneTiming.duration = 0
+    }
+    const computedTiming = Object.assign({}, InitializeComputedTiming, cloneTiming)
+    return computedTiming
   }
 
   private normalizeKeyFrames (keyframes: IObj[] | IObj): IObj[] {
