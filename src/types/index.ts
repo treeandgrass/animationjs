@@ -1,14 +1,14 @@
 import { FillMode, PlaybackDirection, CompositeOperation } from '../enum'
 
 export interface IEffectTiming {
-    delay: number
-    endDelay: number
-    fill: FillMode
-    iterationStart: number
-    iterations: number
-    duration: string | number
-    direction: PlaybackDirection
-    easing: string
+  delay: number
+  endDelay: number
+  fill: FillMode
+  iterationStart: number
+  iterations: number
+  duration: string | number
+  direction: PlaybackDirection
+  easing: string
 }
 
 export interface IOptionalEffectTiming {

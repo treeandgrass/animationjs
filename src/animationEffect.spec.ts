@@ -36,10 +36,10 @@ describe("run KeyframeEffect", () => {
       opacity: 0.9
     }], {
       duration: 3000,
-      composite: CompositeOperation.REPLACE
+      easing: 'ease-in-out'
     })
     const keyFrames = ae.getKeyframes()
-    console.log((ae as any).interpolations(keyFrames))
+    console.log((ae as any).makeInterpolations(keyFrames))
   })
 })
 

@@ -41,6 +41,7 @@ export class Animation extends Event {
 
   play () {
     registry(this)
+    this.playState = AnimationPlayState.running
     schedule()
   }
 

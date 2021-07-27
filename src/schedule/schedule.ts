@@ -8,7 +8,10 @@ const runLoop = () => {
   isInLoop = true
   requestAnimationFrame((time: number) => {
     for (let [_key, animation] of animationMap) {
-      animation._tick(time)
+      try {
+        animation._tick(time)
+      } catch(e) {
+      }
     }
     if (tick && animationMap.size > 0) {
       runLoop()
@@ -34,7 +37,9 @@ export const clearAnimations = () => {
 }
 
 export const registry = (animation: Animation) => {
-  animationMap.set(animation.id, animation)
+  if (!animationMap.has(animation.id)) {
+    animationMap.set(animation.id, animation)
+  }
 }
 
 export const unRegistry = (animation: Animation) => {

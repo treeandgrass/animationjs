@@ -6,7 +6,7 @@ export const InitializeComputedTiming = {
   endDelay: 0,
   fill: FillMode.none,
   iterationStart: 0.0,
-  iterations: 1.0,
+  iterations: 1,
   duration: 0,
   endTime: 0,
   direction: PlaybackDirection.normal,

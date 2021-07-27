@@ -8,7 +8,7 @@ import { bezier, ease, easeIn, easeInOut, easeOut, linear } from './bezierEasing
 
 export const effect = (easing: string): EASE_FUNC => {
   // no params case
-  if (easing === EASING_FUNCTION_SET.linear) {
+  if (easing === EASING_FUNCTION_SET.linear || isNull(easing)) {
     return linear
   } else if (easing === EASING_FUNCTION_SET.ease) {
     return ease

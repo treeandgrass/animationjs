@@ -47,19 +47,17 @@ const calculatingTheActiveTime = (timing: IComputedEffectTiming, activeDuration:
  * Calculating the overall progress
  * https://drafts.csswg.org/web-animations/#calculating-the-overall-progress
  */
-const calculatingTheOverallProgress = (activeTime: number | null, activeDuration: number, phaseState: TimelinePhase, timing: IComputedEffectTiming) => {
+const calculatingTheOverallProgress = (activeTime: number | null, phaseState: TimelinePhase, timing: IComputedEffectTiming) => {
   if (activeTime === UNRESOLVED) {
     return UNRESOLVED
   }
   let overallProgress = timing.iterationStart
-  if (activeDuration === 0) {
-    if (phaseState === TimelinePhase.before) {
-      return overallProgress
-    } else {
-      return timing.iterations + overallProgress
+  if (timing.duration === 0) {
+    if (phaseState !== TimelinePhase.before) {
+      overallProgress += timing.iterations
     }
   }
-  return activeTime / timing.iterations + overallProgress
+  return activeTime / timing.duration + overallProgress
 }
 /**
  * https://drafts.csswg.org/web-animations/#calculating-the-simple-iteration-progress
@@ -89,7 +87,7 @@ const calculatingSimpleIterationProgress = (overallProgress: number | null, phas
    */
   if (simpleIterationProgress === 0 && (phaseState === TimelinePhase.before ||
     phaseState === TimelinePhase.after) && activeTime === activeDuration && timing.iterations !== 0) {
-    simpleIterationProgress = 0
+    simpleIterationProgress = 1.0
   }
   return simpleIterationProgress
 }
@@ -99,7 +97,7 @@ const calculateDuration = (timing: IComputedEffectTiming, playbackRate: number) 
   if (timing.duration === 0 || timing.iterations === 0) {
     return 0;
   }
-  return (timing.duration * timing.iterations) / playbackRate
+  return Math.abs((timing.duration * timing.iterations) / playbackRate)
 }
 
 const calculatingTheCurrentIteration = (activeTime: number | null, phaseState: TimelinePhase, overallProgress: number | null, simpleIterationProgress: number | null, timing: IComputedEffectTiming) => {
@@ -131,7 +129,7 @@ const calculatingTheDirectedProgress = (simpleIterationProgress: number | null, 
     currentDirection = ICurrentDirection.reverse
   } else if (playbackDirection !== PlaybackDirection.normal) {
     let d = currentIteration as number
-    if (playbackDirection === PlaybackDirection['alternate-reverse']) {
+    if (playbackDirection === PlaybackDirection.alternateReverse) {
       d += 1
     }
     if (d % 2 === 0 || d === Infinity) {
@@ -149,12 +147,13 @@ const calculatingTheDirectedProgress = (simpleIterationProgress: number | null, 
  * @param localTime 
  * @returns 
  */
-export const calculateDirectedProcessFromLocalTime = (localTime: number | null, playbackRate: number, timing: IComputedEffectTiming): number | null => {
+export const calculateDirectedProcessFromLocalTime = (localTime: number | null, playbackRate: number, timing: IComputedEffectTiming) => {
   const activeDuration = calculateDuration(timing, playbackRate)
   const phaseState = calPhaseState(localTime, activeDuration, timing)
   const activeTime = calculatingTheActiveTime(timing, activeDuration, localTime, phaseState)
-  const overallProgress = calculatingTheOverallProgress(activeTime, activeDuration, phaseState, timing)
+  const overallProgress = calculatingTheOverallProgress(activeTime, phaseState, timing)
   const simpleIterationProgress = calculatingSimpleIterationProgress(overallProgress, phaseState, activeTime, activeDuration, timing)
   const currentIteration = calculatingTheCurrentIteration(activeTime, phaseState, overallProgress, simpleIterationProgress, timing)
-  return calculatingTheDirectedProgress(simpleIterationProgress, currentIteration, timing)
+  const progress = calculatingTheDirectedProgress(simpleIterationProgress, currentIteration, timing)
+  return { progress, activeDuration, currentIteration }
 }

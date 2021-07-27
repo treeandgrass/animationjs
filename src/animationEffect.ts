@@ -92,14 +92,14 @@ export class KeyframeEffect implements AnimationEffect {
           timings.endDelay = endDelay
         }
       }
-      if (key === 'easing') {
-        if (options[key] !== 'string') {
+      if (key === 'easing' && options[key]) {
+        if (typeof options[key] !== 'string') {
           throw new Error(`KeyframeEffect: ${options[key]} is not a valid value for easing`)
         } else {
           timings[key] = options[key] as string
         }
       }
-      if (key === 'fill') {
+      if (key === 'fill' && options[key]) {
         const fill = options[key] as FillMode
         if (fill !== FillMode.none && fill !== FillMode.auto &&
           fill !== FillMode.backwards && fill !== FillMode.both && fill !== FillMode.forwards) {
@@ -108,7 +108,7 @@ export class KeyframeEffect implements AnimationEffect {
           timings.fill = fill
         }
       }
-      if (key === 'direction') {
+      if (key === 'direction' && options[key]) {
         const direction = options[key] as PlaybackDirection
         if (direction !== PlaybackDirection.alternate && direction !== PlaybackDirection.alternateReverse
           && direction !== PlaybackDirection.normal && direction !== PlaybackDirection.reverse) {
@@ -117,7 +117,7 @@ export class KeyframeEffect implements AnimationEffect {
           timings.direction = direction
         }
       }
-      if (key === 'iterations') {
+      if (key === 'iterations' && options[key]) {
         const iterations = options[key]
         if (typeof iterations !== 'number' || iterations < 0) {
           throw new Error(`KeyframeEffect: ${options[key]} is not a valid value for iterations`)
@@ -125,7 +125,7 @@ export class KeyframeEffect implements AnimationEffect {
           timings[key] = iterations
         }
       }
-      if (key === 'iterationStart') {
+      if (key === 'iterationStart' && options[key]) {
         const iterationStart = options[key] as number
         if (!isFinite(iterationStart)) {
           throw new Error('KeyframeEffect: The provided double value is non-finite')
@@ -293,7 +293,7 @@ export class KeyframeEffect implements AnimationEffect {
         const endPoint = i === frames.length - 2 ? Infinity : to
         const easing = originFrame.easing
         const easing_func = effect(originFrame.easing as string)
-        const composite = (originFrame.composite || targetFrame.composite) as CompositeOperation
+        const composite = (originFrame.composite || targetFrame.composite || CompositeOperation.REPLACE) as CompositeOperation
         
         interpolations.push({
           to,
@@ -333,7 +333,8 @@ export class KeyframeEffect implements AnimationEffect {
   }
 
   public commit (seekTime: number | null, playbackRate: number) {
-    const progress = calculateDirectedProcessFromLocalTime(seekTime, playbackRate, this._computedTiming)
+    const { progress, activeDuration, currentIteration } = calculateDirectedProcessFromLocalTime(seekTime, playbackRate, this._computedTiming)
+    Object.assign(this._computedTiming, { progress, activeDuration, currentIteration })
     if (progress) {
       const commits: ICommit[] = []
       const eased = this.effect(progress)
