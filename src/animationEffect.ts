@@ -338,6 +338,7 @@ export class KeyframeEffect implements AnimationEffect {
     if (progress) {
       const commits: ICommit[] = []
       const eased = this.effect(progress)
+      console.log(eased)
       this.interpolations.filter((interpolation) => {
         return eased >= interpolation.startPoint && eased < interpolation.endPoint
       }).forEach((interpolation) => {

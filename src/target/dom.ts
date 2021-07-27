@@ -14,7 +14,7 @@ export class DOM implements AnimationElement {
       const { easing_func, targetValue, originValue } = interpolation
       const processed = easing_func(commit.seek)
       // interpolate(originValue)
-      console.log(processed)
+      // console.log(processed)
     })
   }
 }

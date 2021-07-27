@@ -34,7 +34,7 @@ describe ('run schedule', () => {
     await new Promise((resolve) => {
       setTimeout(() => {
         resolve(true)
-      }, 3000)
+      }, 1500)
     })
   })
 
@@ -43,7 +43,7 @@ describe ('run schedule', () => {
       setTimeout(() => {
         stop()
         resolve(true)
-      }, 3030)
+      }, 1600)
     })
   })
 
@@ -53,7 +53,7 @@ describe ('run schedule', () => {
         clearAnimations()
         expect(animationMap.size === 0).toBe(true)
         resolve(true)
-      }, 3500)
+      }, 1800)
     })
   })
 })
