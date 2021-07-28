@@ -51,13 +51,15 @@ const calculatingTheOverallProgress = (activeTime: number | null, phaseState: Ti
   if (activeTime === UNRESOLVED) {
     return UNRESOLVED
   }
-  let overallProgress = timing.iterationStart
   if (timing.duration === 0) {
+    let overallProgress = timing.iterationStart
     if (phaseState !== TimelinePhase.before) {
       overallProgress += timing.iterations
     }
+    return overallProgress
+  } else {
+    return activeTime / timing.duration + timing.iterationStart
   }
-  return activeTime / timing.duration + overallProgress
 }
 /**
  * https://drafts.csswg.org/web-animations/#calculating-the-simple-iteration-progress
@@ -76,7 +78,7 @@ const calculatingSimpleIterationProgress = (overallProgress: number | null, phas
   if (overallProgress === Infinity) {
     simpleIterationProgress = timing.iterationStart % 1.0
   } else {
-    simpleIterationProgress = overallProgress / 1.0
+    simpleIterationProgress = overallProgress % 1.0
   }
   /**
    * If all of the following conditions are true,
@@ -85,7 +87,7 @@ const calculatingSimpleIterationProgress = (overallProgress: number | null, phas
    * the active time is equal to the active duration, and
    * the iteration count is not equal to zero.
    */
-  if (simpleIterationProgress === 0 && (phaseState === TimelinePhase.before ||
+  if (simpleIterationProgress === 0 && (phaseState === TimelinePhase.active ||
     phaseState === TimelinePhase.after) && activeTime === activeDuration && timing.iterations !== 0) {
     simpleIterationProgress = 1.0
   }

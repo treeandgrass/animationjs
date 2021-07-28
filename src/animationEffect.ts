@@ -13,7 +13,6 @@ export interface AnimationEffect {
   getComputedTiming(): IComputedEffectTiming
   updateTiming (timing: IOptionalEffectTiming): void
 }
-
 export class KeyframeEffect implements AnimationEffect {
   public target: Element
   public pseudoElement: string | undefined
@@ -58,6 +57,11 @@ export class KeyframeEffect implements AnimationEffect {
         }
       })
     })
+    for (let [_prop, frames] of groupKeyFrames) {
+      if (frames[0].offset !== 0 || frames[frames.length - 1].offset !== 1) {
+        throw new TypeError('invalid offset: first item should be zero and last item should be one')
+      }
+    }
     return groupKeyFrames
   }
 
@@ -291,7 +295,6 @@ export class KeyframeEffect implements AnimationEffect {
         const targetValue = targetFrame[prop] as string
         const startPoint = i === 0 ? -Infinity : from
         const endPoint = i === frames.length - 2 ? Infinity : to
-        const easing = originFrame.easing
         const easing_func = effect(originFrame.easing as string)
         const composite = (originFrame.composite || targetFrame.composite || CompositeOperation.REPLACE) as CompositeOperation
         
@@ -338,13 +341,12 @@ export class KeyframeEffect implements AnimationEffect {
     if (progress) {
       const commits: ICommit[] = []
       const eased = this.effect(progress)
-      console.log(eased)
       this.interpolations.filter((interpolation) => {
         return eased >= interpolation.startPoint && eased < interpolation.endPoint
       }).forEach((interpolation) => {
+        const total = interpolation.to - interpolation.from
         const offset = eased - interpolation.from
-        const duration = interpolation.to - interpolation.from
-        const frameSeekValue = duration === 0 ? 0 : offset / duration
+        const frameSeekValue = total === 0 ? 0 : interpolation.easing_func(offset / total)
         commits.push({
           interpolation,
           seek: frameSeekValue

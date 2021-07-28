@@ -1,7 +1,7 @@
 import { schedule, registry, clearAnimations, animationMap, stop } from './schedule'
 import { Animation } from '../animation'
 import { KeyframeEffect } from '../animationEffect'
-
+jest.setTimeout(50000)
 
 describe ('run schedule', () => {
 
@@ -12,6 +12,11 @@ describe ('run schedule', () => {
   test('schedule', async () => {
     const target = document.createElement('div')
     const ae = new  KeyframeEffect(target, [{
+      easing: 'ease-in',
+      offset: 0,
+      transform: 'translate(10px, 20px)',
+      opacity: 0.05
+    }, {
       easing: 'ease-in',
       offset: 0.1,
       transform: 'translate(10px, 20px)',
@@ -26,16 +31,19 @@ describe ('run schedule', () => {
       offset: 0.8,
       transform: 'translate(100px, 200px)',
       opacity: 0.9
+    }, {
+      easing: 'ease-in',
+      offset: 1,
+      transform: 'translate(100px, 200px)',
+      opacity: 1
     }], {
       duration: 3000,
-      easing: 'ease-in-out'
+      fill: 'both' as any,
+      iterations: 5,
+      easing: 'ease-in-out',
+      direction: 'alternate-reverse' as any
     })
     new Animation(ae).play()
-    await new Promise((resolve) => {
-      setTimeout(() => {
-        resolve(true)
-      }, 1500)
-    })
   })
 
   test('stop', async () => {
@@ -43,7 +51,7 @@ describe ('run schedule', () => {
       setTimeout(() => {
         stop()
         resolve(true)
-      }, 1600)
+      }, 1500)
     })
   })
 
@@ -53,7 +61,7 @@ describe ('run schedule', () => {
         clearAnimations()
         expect(animationMap.size === 0).toBe(true)
         resolve(true)
-      }, 1800)
+      }, 1520)
     })
   })
 })

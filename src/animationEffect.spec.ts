@@ -5,21 +5,26 @@ const target = document.createElement('div')
 
 describe("run KeyframeEffect", () => {
   
-  test('case 1: getKeyframes', () => {
-    const ae = new  KeyframeEffect(target, {
-      color: ['#FFFFFF', '#000000'],
-      opacity: [0.1, 0.6, 0.9, 1.0],
-      offset: [0, 0.1, 0.5],
-      composite: CompositeOperation.REPLACE
-    }, {
-      duration: 3000
-    })
-    const keyFrames = ae.getKeyframes()
-    console.log(keyFrames)
-  })
+  // test('case 1: getKeyframes', () => {
+  //   const ae = new  KeyframeEffect(target, {
+  //     color: ['#FFFFFF', '#000000'],
+  //     opacity: [0.1, 0.6, 0.9, 1.0],
+  //     offset: [0, 0.1, 0.5],
+  //     composite: CompositeOperation.REPLACE
+  //   }, {
+  //     duration: 3000
+  //   })
+  //   const keyFrames = ae.getKeyframes()
+  //   console.log(keyFrames)
+  // })
 
   test('case2: getKeyframes', () => {
     const ae = new  KeyframeEffect(target, [{
+      easing: 'ease-in',
+      offset: 0,
+      transform: 'translate(10px, 20px)',
+      opacity: 0.05
+    }, {
       easing: 'ease-in',
       offset: 0.1,
       transform: 'translate(10px, 20px)',
@@ -34,9 +39,17 @@ describe("run KeyframeEffect", () => {
       offset: 0.8,
       transform: 'translate(100px, 200px)',
       opacity: 0.9
+    }, {
+      easing: 'ease-in',
+      offset: 1,
+      transform: 'translate(100px, 200px)',
+      opacity: 1
     }], {
       duration: 3000,
-      easing: 'ease-in-out'
+      fill: 'both' as any,
+      iterations: 5,
+      easing: 'ease-in-out',
+      direction: 'alternate-reverse' as any
     })
     const keyFrames = ae.getKeyframes()
     console.log((ae as any).makeInterpolations(keyFrames))
