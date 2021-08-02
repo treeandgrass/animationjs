@@ -1,4 +1,4 @@
-import { schedule, registry, clearAnimations, animationMap, stop } from './schedule'
+import { schedule, clearAnimations, animationMap, stop } from './schedule'
 import { Animation } from '../animation'
 import { KeyframeEffect } from '../animationEffect'
 jest.setTimeout(50000)

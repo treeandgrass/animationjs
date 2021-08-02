@@ -7,10 +7,11 @@ export const animationMap = new Map<string, Animation>()
 const runLoop = () => {
   isInLoop = true
   requestAnimationFrame((time: number) => {
-    for (let [_key, animation] of animationMap) {
+    for (const [key, animation] of animationMap) {
       try {
         animation._tick(time)
-      } catch(e) {
+      } catch (e) {
+        //
       }
     }
     if (tick && animationMap.size > 0) {

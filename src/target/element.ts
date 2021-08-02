@@ -1,4 +1,4 @@
 import { ICommit } from '../types'
-export interface AnimationElement {
+export interface IAnimationElement {
   apply (commit: ICommit[]): void
 }

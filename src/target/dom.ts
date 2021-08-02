@@ -1,14 +1,13 @@
 import { ICommit } from '../types'
-import { AnimationElement } from './element'
-import { interpolate } from '../utils'
-export class DOM implements AnimationElement {
+import { IAnimationElement } from './element'
+export class DOM implements IAnimationElement {
   private target: Element | null = null
-  
+
   constructor (target: Element) {
     this.target = target
   }
 
-  apply (commits: ICommit[]) {
+  public apply (commits: ICommit[]) {
     commits.forEach((commit) => {
       const { interpolation, seek } = commit
       // interpolate(originValue)

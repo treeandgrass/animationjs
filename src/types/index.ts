@@ -70,3 +70,8 @@ export interface ICommit {
 }
 
 export type IFromWithTo = boolean | number | boolean[] | number[]
+
+export interface IValueUnit {
+  unit: string,
+  values: number[]
+}

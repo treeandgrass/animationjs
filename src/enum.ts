@@ -6,15 +6,15 @@
 */
 export enum TimelinePhase { 'inactive', 'before', 'active', 'after' }
 
-export enum FillMode { 
+export enum FillMode {
   none = 'none',
   forwards = 'forwards',
   backwards = 'backwards',
   both = 'both',
-  auto = 'auto' 
+  auto = 'auto'
 }
 
-export enum PlaybackDirection { 
+export enum PlaybackDirection {
   normal = 'normal',
   reverse = 'reverse',
   alternate = 'alternate',
