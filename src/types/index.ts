@@ -1,5 +1,8 @@
 import { FillMode, PlaybackDirection, CompositeOperation } from '../enum'
 
+export type TimeFunc = (t: number) => number
+
+export type PropFunc = (originValue: string, target: string) => TimeFunc
 export interface IEffectTiming {
   delay: number
   endDelay: number
@@ -60,7 +63,8 @@ export interface Interpolation {
   endPoint: number
   originValue: string
   targetValue: string
-  easing_func: EASE_FUNC
+  easing: EASE_FUNC
+  interpolate: TimeFunc
   composite: CompositeOperation
 }
 
@@ -75,3 +79,4 @@ export interface IValueUnit {
   unit: string,
   values: number[]
 }
+

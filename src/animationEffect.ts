@@ -3,14 +3,18 @@ import { DOM } from './target/dom'
 import { effect } from './timings/effect'
 import { CompositeOperation, FillMode, PlaybackDirection } from './enum'
 import { linear } from './timings/bezierEasing'
-import { AnimationElement } from './target/element'
+import { IAnimationElement } from './target/element'
 import { calculateDirectedProcessFromLocalTime } from './timings/progress'
 import { IOptionalEffectTiming, IEffectTiming, IComputedEffectTiming, EASE_FUNC,
-  KeyframeEffectOptions, IObj, Interpolation, ICommit } from './types'
-import { EASING_FUNCTION_SET, SUPPORTED_EASING, PreserveProps, InitializeComputedTiming, InitializeEffectTiming } from './constant'
-export interface AnimationEffect {
-  getTiming(): IEffectTiming
-  getComputedTiming(): IComputedEffectTiming
+  KeyframeEffectOptions, IObj, Interpolation, ICommit, TimeFunc, PropFunc } from './types'
+import { EASING_FUNCTION_SET, SUPPORTED_EASING, PreserveProps,
+  InitializeComputedTiming, InitializeEffectTiming } from './constant'
+import { PropertyHandler } from './handlers/handler'
+
+type PropertyHandlerKeyType = keyof PropertyHandler
+export interface IAnimationEffect {
+  getTiming (): IEffectTiming
+  getComputedTiming (): IComputedEffectTiming
   updateTiming (timing: IOptionalEffectTiming): void
 }
 export class KeyframeEffect implements AnimationEffect {
@@ -21,12 +25,12 @@ export class KeyframeEffect implements AnimationEffect {
   private keyframes: IObj[]
   private options: KeyframeEffectOptions
   private interpolations: Interpolation[] = []
-  private effectTarget: AnimationElement
+  private effectTarget: IAnimationElement
   private effect: EASE_FUNC = linear
   private _timing!: IEffectTiming
   private _computedTiming: IComputedEffectTiming
-  
-  constructor(target: Element, keyframes: IObj[] | IObj, options: KeyframeEffectOptions) {
+
+  constructor (target: Element, keyframes: IObj[] | IObj, options: KeyframeEffectOptions) {
     this.target = target
     this.options = options
     if (options.composite) {
@@ -42,6 +46,49 @@ export class KeyframeEffect implements AnimationEffect {
     this.pseudoElement = options.pseudoElement
     this.keyframes = this.normalizeKeyFrames(keyframes)
     this.interpolations = this.makeInterpolations(this.keyframes)
+  }
+
+  public getTiming (): IEffectTiming {
+    return Object.assign({}, this._timing)
+  }
+
+  public getComputedTiming (): IComputedEffectTiming {
+    return Object.assign({}, this._computedTiming)
+  }
+
+  public updateTiming (timing: IOptionalEffectTiming): void {
+    Object.assign(this.options, timing)
+  }
+
+
+  public getKeyframes (): IObj[] {
+    return this.keyframes
+  }
+
+  public setKeyframes (keyframes: IObj[] | IObj) {
+    this.keyframes = this.normalizeKeyFrames(keyframes)
+  }
+
+  public commit (seekTime: number | null, playbackRate: number) {
+    const { progress, activeDuration, currentIteration } =
+      calculateDirectedProcessFromLocalTime(seekTime, playbackRate, this._computedTiming)
+    Object.assign(this._computedTiming, { progress, activeDuration, currentIteration })
+    if (progress) {
+      const commits: ICommit[] = []
+      const eased = this.effect(progress)
+      this.interpolations.filter((interpolation) => {
+        return eased >= interpolation.startPoint && eased < interpolation.endPoint
+      }).forEach((interpolation) => {
+        const total = interpolation.to - interpolation.from
+        const offset = eased - interpolation.from
+        const frameSeekValue = total === 0 ? 0 : interpolation.easing(offset / total)
+        commits.push({
+          interpolation,
+          seek: frameSeekValue
+        })
+      })
+      this.effectTarget.apply(commits)
+    }
   }
 
   private groupKeyFramesByProp (normKeyFrames: IObj[]) {
@@ -295,9 +342,11 @@ export class KeyframeEffect implements AnimationEffect {
         const targetValue = targetFrame[prop] as string
         const startPoint = i === 0 ? -Infinity : from
         const endPoint = i === frames.length - 2 ? Infinity : to
-        const easing_func = effect(originFrame.easing as string)
-        const composite = (originFrame.composite || targetFrame.composite || CompositeOperation.REPLACE) as CompositeOperation
-        
+        const easing = effect(originFrame.easing as string)
+        const composite = (originFrame.composite || targetFrame.composite ||
+          CompositeOperation.REPLACE) as CompositeOperation
+        const propFunc: PropFunc = PropertyHandler[prop as PropertyHandlerKeyType] || PropertyHandler.default
+        const interpolate = propFunc(originValue, targetValue)
         interpolations.push({
           to,
           prop,
@@ -305,54 +354,13 @@ export class KeyframeEffect implements AnimationEffect {
           endPoint,
           composite,
           startPoint,
-          easing_func,
+          easing,
+          interpolate,
           originValue,
           targetValue
         })
       }
     }
     return interpolations
-  }
-
-  public getTiming(): IEffectTiming {
-    return Object.assign({}, this._timing)
-  }
-
-  public getComputedTiming(): IComputedEffectTiming {
-    return Object.assign({}, this._computedTiming)
-  }
-
-  public updateTiming(timing: IOptionalEffectTiming): void {
-    Object.assign(this.options, timing)
-  }
-
-
-  public getKeyframes(): IObj[] {
-    return this.keyframes
-  }
-
-  public setKeyframes(keyframes: IObj[] | IObj) {
-    this.keyframes = this.normalizeKeyFrames(keyframes)
-  }
-
-  public commit (seekTime: number | null, playbackRate: number) {
-    const { progress, activeDuration, currentIteration } = calculateDirectedProcessFromLocalTime(seekTime, playbackRate, this._computedTiming)
-    Object.assign(this._computedTiming, { progress, activeDuration, currentIteration })
-    if (progress) {
-      const commits: ICommit[] = []
-      const eased = this.effect(progress)
-      this.interpolations.filter((interpolation) => {
-        return eased >= interpolation.startPoint && eased < interpolation.endPoint
-      }).forEach((interpolation) => {
-        const total = interpolation.to - interpolation.from
-        const offset = eased - interpolation.from
-        const frameSeekValue = total === 0 ? 0 : interpolation.easing_func(offset / total)
-        commits.push({
-          interpolation,
-          seek: frameSeekValue
-        })
-      })
-      this.effectTarget.apply(commits)
-    }
   }
 }

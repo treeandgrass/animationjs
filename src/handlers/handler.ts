@@ -44,5 +44,10 @@ export class PropertyHandler {
       return value.join(' ')
     }
   }
+  public static default (originValue: string, targetValue: string) {
+    return (t: number) => {
+      return t
+    }
+  }
 }
 

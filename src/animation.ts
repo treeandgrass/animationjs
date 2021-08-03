@@ -2,7 +2,7 @@ import { UUIdV4 } from './utils'
 import { UNRESOLVED } from './constant'
 import { Event } from './event/eventTarget'
 import {  KeyframeEffect } from './animationEffect'
-import { AnimationEffect } from './animationEffect'
+import { IAnimationEffect } from './animationEffect'
 import { AnimationPlayState } from './enum'
 import { registry, schedule, unRegistry } from './schedule/schedule'
 
@@ -14,7 +14,7 @@ export class Animation extends Event {
   public effect: KeyframeEffect
   private currentTime: number = 0
 
-  constructor (effect: AnimationEffect) {
+  constructor (effect: IAnimationEffect) {
     super()
     this.id = UUIdV4()
     this.effect = effect as KeyframeEffect

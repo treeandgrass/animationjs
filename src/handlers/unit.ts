@@ -1,6 +1,6 @@
 import { IValueUnit } from '../types'
 
-const units = ['px', '%', 'turn', 'rem']
+const units = ['px', '%', 'turn', 'rem', 'deg']
 
 export const parseValueAndUnit = (value: string = '') => {
   const parsed: IValueUnit = {
