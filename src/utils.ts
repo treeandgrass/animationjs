@@ -37,3 +37,7 @@ export const interpolate = (from: IFromWithTo, to: IFromWithTo, processed: numbe
   }
   throw new Error('Incorrect interpolation parameters')
 }
+
+export const numToStr = (x: number) => {
+  return x.toFixed(6).replace('.000000', '')
+}

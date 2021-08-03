@@ -1,30 +1,19 @@
-import { interpolate,  } from '../utils'
-import { IValueUnit } from '../types'
+import { interpolate, numToStr } from '../utils'
+import { parseValueAndUnit } from './unit'
 
-export class Transform {
-  public static translate (prop: string, origin: IValueUnit, target: IValueUnit, processed: number) {
-    if (target.unit !== origin.unit) {
-      throw new TypeError(`invalid unit: ${prop} value`)
-    }
-    if (target.values.length !== origin.values.length) {
-      throw new TypeError(`invalid ${prop} value length`)
-    }
-    const inter: any[] = interpolate(origin.values, target.values, processed)
-    const normalizeInter = inter.map((item) => {
-      return item + origin.unit
-    })
-    return `${prop}(${normalizeInter.join(',')})`
+export const parseTransformProp = (prop: string, origin: string, target: string, processed: number) => {
+  const parsedOrigin = parseValueAndUnit(origin)
+  const parsedTarget = parseValueAndUnit(target)
+  if (parsedTarget.unit !== parsedOrigin.unit) {
+    throw new TypeError(`invalid unit: ${prop} value`)
   }
+  if (parsedTarget.values.length !== parsedOrigin.values.length) {
+    throw new TypeError(`invalid ${prop} value length`)
+  }
+  const inter: any[] = interpolate(parsedOrigin.values, parsedTarget.values, processed)
+  const normalizeInter = inter.map((item) => {
+    return numToStr(item) + parsedOrigin.unit
+  })
 
-  public static scale (prop: string, origin: number | number[], target: number | number[]) {
-    //
-  }
-
-  public static rotate (prop: string, origin: number | number[], target: number | number[]) {
-    //
-  }
-
-  public static skew (prop: string, origin: number | number[], target: number | number[]) {
-    //
-  }
+  return `${prop}(${normalizeInter.join(',')})`
 }
