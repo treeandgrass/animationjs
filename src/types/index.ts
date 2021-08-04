@@ -80,3 +80,4 @@ export interface IValueUnit {
   values: number[]
 }
 
+export type DomType = keyof CSSStyleDeclaration

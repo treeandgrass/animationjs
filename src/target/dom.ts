@@ -1,4 +1,4 @@
-import { ICommit } from '../types'
+import { ICommit, DomType, IObj } from '../types'
 import { IAnimationElement } from './element'
 
 export class DOM implements IAnimationElement {
@@ -9,12 +9,16 @@ export class DOM implements IAnimationElement {
   }
 
   public apply (commits: ICommit[]) {
+    const applyStyle: IObj = {}
     commits.forEach((commit) => {
       const { interpolation, seek } = commit
-      const { interpolate } = interpolation
-      console.log(interpolate(seek))
-      // interpolate(originValue)
-      // console.log(seek)
+      const { interpolate, prop } = interpolation
+      const propValue = interpolate(seek)
+      applyStyle[prop] = propValue
     })
+    if (this.target) {
+      const dom = this.target as HTMLElement
+      Object.assign(dom.style, applyStyle)
+    }
   }
 }

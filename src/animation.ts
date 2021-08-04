@@ -20,7 +20,7 @@ export class Animation extends Event {
     this.effect = effect as KeyframeEffect
   }
 
-  cancel () {
+  public cancel () {
     if (!this.effect) {
       return
     }
@@ -29,7 +29,7 @@ export class Animation extends Event {
     this.playState = AnimationPlayState.idle
   }
 
-  finish () {
+  public finish () {
     if (this.playState === AnimationPlayState.idle) {
       return
     }
@@ -39,19 +39,19 @@ export class Animation extends Event {
     schedule()
   }
 
-  play () {
+  public play () {
     registry(this)
     this.playState = AnimationPlayState.running
     schedule()
   }
 
-  pause () {
+  public pause () {
     unRegistry(this)
     this.startTime = UNRESOLVED
     this.playState = AnimationPlayState.paused
   }
 
-  updatePlaybackRate (playbackRate: number) {
+  public updatePlaybackRate (playbackRate: number) {
     if (this.playbackRate === playbackRate) {
       return
     }
@@ -61,7 +61,7 @@ export class Animation extends Event {
     }
   }
 
-  reverse () {
+  public reverse () {
     this.playbackRate = -this.playbackRate
     this.play()
   }
