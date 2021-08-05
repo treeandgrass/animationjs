@@ -6,7 +6,7 @@ import { linear } from './timings/bezierEasing'
 import { IAnimationElement } from './target/element'
 import { calculateDirectedProcessFromLocalTime } from './timings/progress'
 import { IOptionalEffectTiming, IEffectTiming, IComputedEffectTiming, EASE_FUNC,
-  KeyframeEffectOptions, IObj, Interpolation, ICommit, TimeFunc, PropFunc } from './types'
+  IKeyframeEffectOptions, IObj, Interpolation, ICommit, TimeFunc, PropFunc } from './types'
 import { EASING_FUNCTION_SET, SUPPORTED_EASING, PreserveProps,
   InitializeComputedTiming, InitializeEffectTiming } from './constant'
 import { PropertyHandler } from './handlers/handler'
@@ -23,14 +23,14 @@ export class KeyframeEffect implements AnimationEffect {
   public composite: CompositeOperation = CompositeOperation.REPLACE
 
   private keyframes: IObj[]
-  private options: KeyframeEffectOptions
+  private options: IKeyframeEffectOptions
   private interpolations: Interpolation[] = []
   private effectTarget: IAnimationElement
   private effect: EASE_FUNC = linear
   private _timing!: IEffectTiming
   private _computedTiming: IComputedEffectTiming
 
-  constructor (target: Element, keyframes: IObj[] | IObj, options: KeyframeEffectOptions) {
+  constructor (target: Element, keyframes: IObj[] | IObj, options: IKeyframeEffectOptions) {
     this.target = target
     this.options = options
     if (options.composite) {
@@ -112,7 +112,7 @@ export class KeyframeEffect implements AnimationEffect {
     return groupKeyFrames
   }
 
-  private makeTiming (options: KeyframeEffectOptions) {
+  private makeTiming (options: IKeyframeEffectOptions) {
     const timings = Object.assign({}, InitializeEffectTiming)
     const keys = ['delay', 'direction', 'duration', 'easing', 'endDelay', 'fill',
       'iterationStart', 'iterations']
@@ -188,7 +188,7 @@ export class KeyframeEffect implements AnimationEffect {
     return timings
   }
 
-  private makeComputedTiming (options: KeyframeEffectOptions) {
+  private makeComputedTiming (options: IKeyframeEffectOptions) {
     const cloneTiming = this.getTiming()
     if (cloneTiming.duration === 'auto') {
       cloneTiming.duration = 0

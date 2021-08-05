@@ -43,7 +43,7 @@ export interface IComputedEffectTiming {
 
 export type IEasingFunction = (t: number) => number
 
-export interface KeyframeEffectOptions extends IOptionalEffectTiming {
+export interface IKeyframeEffectOptions extends IOptionalEffectTiming {
   composite?: CompositeOperation
   pseudoElement?: string
 }

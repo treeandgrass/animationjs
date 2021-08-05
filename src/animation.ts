@@ -70,6 +70,10 @@ export class Animation extends Event {
     if (this.currentTime === localTime) {
       return
     }
+    const timing = this.effect.getComputedTiming()
+    if (this.currentTime > timing.activeDuration) {
+      this.finished()
+    }
     if (this.playState !== AnimationPlayState.idle && this.playState !== AnimationPlayState.paused) {
       if (this.startTime === UNRESOLVED) {
         this.startTime = localTime - this.currentTime / this.playbackRate
@@ -79,5 +83,10 @@ export class Animation extends Event {
         this.effect.commit(this.currentTime, this.playbackRate)
       }
     }
+  }
+
+  private finished () {
+    this.playState = AnimationPlayState.finished
+    unRegistry(this)
   }
 }
