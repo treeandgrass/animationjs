@@ -345,7 +345,7 @@ export class KeyframeEffect implements AnimationEffect {
         const easing = effect(originFrame.easing as string)
         const composite = (originFrame.composite || targetFrame.composite ||
           CompositeOperation.REPLACE) as CompositeOperation
-        const propFunc: PropFunc = PropertyHandler[prop as PropertyHandlerKeyType] || PropertyHandler.default
+        const propFunc: PropFunc = PropertyHandler[prop as PropertyHandlerKeyType] || PropertyHandler.defaultHandler
         const interpolate = propFunc(originValue, targetValue)
         interpolations.push({
           to,
