@@ -1,9 +1,9 @@
 import { IObj } from '../types'
-import { interpolate } from '../utils'
 import { parseValueAndUnit } from './unit'
 import { parseTransformProp } from './transform'
+import { interpolate, toNumbers } from '../utils'
+import { toRGBA, toRGBAStr, defaultColor } from './color'
 
-// export const PropertyHandler = new Map()
 export class PropertyHandler {
   public static transform = (originValue: string, targetValue: string) => {
     const reg = /\s*(\w+)\(([^)]*)\)/g
@@ -50,15 +50,28 @@ export class PropertyHandler {
   }
 
   public static colorHandler = (originValue: string, targetValue: string) => {
-    const originValueUnit = parseValueAndUnit(originValue)
-    const targetValueUnit = parseValueAndUnit(targetValue)
+    const delimiter = ' ' // delimiter
+    const originValueUnit = parseValueAndUnit(originValue, delimiter)
+    const targetValueUnit = parseValueAndUnit(targetValue, delimiter)
+    const originRgbaColors = originValueUnit.values.map((color) => toRGBA(color))
+    const targetRgbaColor = targetValueUnit.values.map((color) => toRGBA(color))
+    return (t: number) => {
+      const interColors: number[][] = interpolate(originRgbaColors, targetRgbaColor, t)
+      const colors = interColors.map((color) => toRGBAStr(color))
+      if (colors.length) {
+        return colors.join(' ')
+      }
+      return defaultColor
+    }
   }
 
   public static defaultHandler = (originValue: string, targetValue: string) => {
     const originValueUnit = parseValueAndUnit(originValue)
     const targetValueUnit = parseValueAndUnit(targetValue)
     return (t: number) => {
-      const inters = interpolate(originValueUnit.values, targetValueUnit.values, t)
+      const originValues = toNumbers(originValueUnit.values) as number[]
+      const targetValues = toNumbers(targetValueUnit.values) as number[]
+      const inters = interpolate(originValues, targetValues, t)
       const normalizeInter = inters.map((item: any) => {
         return item + originValueUnit.unit
       })
@@ -67,5 +80,20 @@ export class PropertyHandler {
   }
 }
 
-export const colorProperties = ['color', 'backgroundColor', 'borderColor', 'borderTopColor']
+
+export const mapHandler = new Map()
+
+// color handler
+const colorProperties = ['color', 'backgroundColor', 'borderColor',
+  'borderTopColor', 'borderRightColor', 'borderBottomColor', 'borderLeftColor']
+colorProperties.forEach((key) => {
+  mapHandler.set(key, PropertyHandler.colorHandler)
+})
+
+// transform
+const transformProperties = ['transform']
+transformProperties.forEach((key) => {
+  mapHandler.set(key, PropertyHandler.transform)
+})
+
 

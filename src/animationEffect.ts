@@ -9,7 +9,7 @@ import { IOptionalEffectTiming, IEffectTiming, IComputedEffectTiming, EASE_FUNC,
   IKeyframeEffectOptions, IObj, Interpolation, ICommit, TimeFunc, PropFunc } from './types'
 import { EASING_FUNCTION_SET, SUPPORTED_EASING, PreserveProps,
   InitializeComputedTiming, InitializeEffectTiming } from './constant'
-import { PropertyHandler } from './handlers/handler'
+import { PropertyHandler, mapHandler } from './handlers/handler'
 
 type PropertyHandlerKeyType = keyof PropertyHandler
 export interface IAnimationEffect {
@@ -27,7 +27,9 @@ export class KeyframeEffect implements AnimationEffect {
   private interpolations: Interpolation[] = []
   private effectTarget: IAnimationElement
   private effect: EASE_FUNC = linear
+  // tslint:disable-next-line: variable-name
   private _timing!: IEffectTiming
+  // tslint:disable-next-line: variable-name
   private _computedTiming: IComputedEffectTiming
 
   constructor (target: Element, keyframes: IObj[] | IObj, options: IKeyframeEffectOptions) {
@@ -104,7 +106,7 @@ export class KeyframeEffect implements AnimationEffect {
         }
       })
     })
-    for (let [_prop, frames] of groupKeyFrames) {
+    for (const [prop, frames] of groupKeyFrames) {
       if (frames[0].offset !== 0 || frames[frames.length - 1].offset !== 1) {
         throw new TypeError('invalid offset: first item should be zero and last item should be one')
       }
@@ -207,7 +209,7 @@ export class KeyframeEffect implements AnimationEffect {
           return
         }
         const value = keyframes[prop]
-        let pairs: (string | number)[] = Array.isArray(value) ? value : [value]
+        const pairs: Array<string| number> = Array.isArray(value) ? value : [value]
         if (pairs.length === 0) { // 边界情况
           return
         }
@@ -289,6 +291,7 @@ export class KeyframeEffect implements AnimationEffect {
     // 检查offset为空 & offset顺序
     let isExistNullOffset = false
     let previousOffsetValue = -Infinity
+    // tslint:disable-next-line: prefer-for-of
     for (let i = 0; i < frames.length; i++) {
       if (isNull(frames[i].offset)) {
         isExistNullOffset = true
@@ -332,7 +335,7 @@ export class KeyframeEffect implements AnimationEffect {
   private makeInterpolations (keyframes: IObj[]): Interpolation[] {
     const interpolations: Interpolation[] = []
     const keyFramesGroup = this.groupKeyFramesByProp(keyframes)
-    for (let [prop, frames] of keyFramesGroup) {
+    for (const [prop, frames] of keyFramesGroup) {
       for (let i = 0; i < frames.length - 1; i++) {
         const originFrame = frames[i]
         const targetFrame = frames[i + 1]
@@ -345,7 +348,7 @@ export class KeyframeEffect implements AnimationEffect {
         const easing = effect(originFrame.easing as string)
         const composite = (originFrame.composite || targetFrame.composite ||
           CompositeOperation.REPLACE) as CompositeOperation
-        const propFunc: PropFunc = PropertyHandler[prop as PropertyHandlerKeyType] || PropertyHandler.defaultHandler
+        const propFunc: PropFunc = mapHandler.get(prop) || PropertyHandler.defaultHandler
         const interpolate = propFunc(originValue, targetValue)
         interpolations.push({
           to,

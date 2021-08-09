@@ -3,7 +3,7 @@ const HtmlWebpackPlugin = require('html-webpack-plugin')
 
 module.exports = function(env) {
     const config = {
-        entry: './examples/transition/start.ts',
+        entry: './examples/color/color.ts',
         devtool: env.production ? 'source-maps' : 'eval',
         mode: env.production ? 'production' : 'development',
         module: {
@@ -32,7 +32,7 @@ module.exports = function(env) {
         plugins: [
             new HtmlWebpackPlugin({
                 filename: 'index.html',
-                template: './examples/transition/start.html'
+                template: './examples/color/color.html'
             })
         ]
     }

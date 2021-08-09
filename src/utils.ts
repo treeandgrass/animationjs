@@ -41,3 +41,10 @@ export const interpolate = (from: IFromWithTo, to: IFromWithTo, processed: numbe
 export const numToStr = (x: number) => {
   return x.toFixed(6).replace('.000000', '')
 }
+
+export const toNumbers = (items: string| string[]) => {
+  if (Array.isArray(items)) {
+    return items.map((item) => parseFloat(item))
+  }
+  return parseFloat(items)
+}

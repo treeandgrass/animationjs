@@ -55,6 +55,7 @@ export type EASE_FUNC = (t: number) => number
 
 export type EASING_FUNCTION_NAME = 'linear' | 'ease' | 'ease-in'| 'ease-out' | 'ease-in-out' | 'spring' | 'step'
 
+// tslint:disable-next-line: interface-name
 export interface Interpolation {
   to: number
   from: number
@@ -73,11 +74,11 @@ export interface ICommit {
   interpolation: Interpolation
 }
 
-export type IFromWithTo = boolean | number | boolean[] | number[]
+export type IFromWithTo = boolean | number | boolean[] | number[] | number[][]
 
 export interface IValueUnit {
   unit: string,
-  values: number[]
+  values: string[]
 }
 
 export type DomType = keyof CSSStyleDeclaration

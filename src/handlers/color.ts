@@ -1,3 +1,6 @@
+// default color
+export const defaultColor = '#FFFFFF'
+
 /**
  * https://www.rapidtables.com/convert/color/hex-to-rgb.html
  */
@@ -112,3 +115,6 @@ export const toRGBA = (color: string) => {
   throw new Error(`not supported color value: ${color}`)
 }
 
+export const toRGBAStr = (rgba: number[]) => {
+  return `rgba(${rgba.join(',')})`
+}

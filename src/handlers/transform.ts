@@ -1,5 +1,5 @@
-import { interpolate, numToStr } from '../utils'
 import { parseValueAndUnit } from './unit'
+import { interpolate, numToStr, toNumbers } from '../utils'
 
 export const parseTransformProp = (prop: string, origin: string, target: string, processed: number) => {
   const parsedOrigin = parseValueAndUnit(origin)
@@ -10,7 +10,9 @@ export const parseTransformProp = (prop: string, origin: string, target: string,
   if (parsedTarget.values.length !== parsedOrigin.values.length) {
     throw new TypeError(`invalid ${prop} value length`)
   }
-  const inter: any[] = interpolate(parsedOrigin.values, parsedTarget.values, processed)
+  const originValues = toNumbers(parsedOrigin.values)
+  const targetValues = toNumbers(parsedTarget.values)
+  const inter: any[] = interpolate(originValues, targetValues, processed)
   const normalizeInter = inter.map((item) => {
     return numToStr(item) + parsedOrigin.unit
   })
