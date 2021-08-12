@@ -75,7 +75,7 @@ export class PropertyHandler {
       const normalizeInter = inters.map((item: any) => {
         return item + originValueUnit.unit
       })
-      return normalizeInter.join(',')
+      return normalizeInter.join(' ')
     }
   }
 }

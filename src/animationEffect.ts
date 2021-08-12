@@ -11,7 +11,6 @@ import { EASING_FUNCTION_SET, SUPPORTED_EASING, PreserveProps,
   InitializeComputedTiming, InitializeEffectTiming } from './constant'
 import { PropertyHandler, mapHandler } from './handlers/handler'
 
-type PropertyHandlerKeyType = keyof PropertyHandler
 export interface IAnimationEffect {
   getTiming (): IEffectTiming
   getComputedTiming (): IComputedEffectTiming

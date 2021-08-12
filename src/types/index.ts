@@ -82,3 +82,8 @@ export interface IValueUnit {
 }
 
 export type DomType = keyof CSSStyleDeclaration
+
+export interface ITransform {
+  d: any[]
+  t: string
+}
