@@ -13,7 +13,10 @@ export const parseValueAndUnit = (value: string = '', delimiter: string = ',') =
       parsed.unit = unit
     } else {
       if (parsed.unit !== unit) {
-        throw new TypeError(`invalid unit: ${value}`)
+        const temp =  (item + '').trim()
+        if (temp !== '0') { // not zero should add unit
+          throw new TypeError(`invalid unit: ${value}`)
+        }
       }
     }
     parsed.values.push(item)

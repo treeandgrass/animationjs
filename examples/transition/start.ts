@@ -1,8 +1,7 @@
-import { Animation } from '../../src/animation'
-import { KeyframeEffect } from '../../src/animationEffect'
+import { anime } from '../../src'
 
 const target = document.getElementById('move') as Element
-const ae = new  KeyframeEffect(target, [{
+const an =  anime(target, [{
   offset: 0,
   transform: 'translate(10px, 20px)'
 }, {
@@ -25,7 +24,7 @@ const ae = new  KeyframeEffect(target, [{
 })
 
 const target1 = document.getElementById('move1') as Element
-const ae1 = new  KeyframeEffect(target1, [{
+const an1 = anime(target1, [{
   offset: 0,
   transform: 'translate(10px, 20px)'
 }, {
@@ -49,7 +48,7 @@ const ae1 = new  KeyframeEffect(target1, [{
 })
 
 const target2 = document.getElementById('move2') as Element
-const ae2 = new  KeyframeEffect(target2, [{
+const an2 = anime(target2, [{
   offset: 0,
   transform: 'translate(10px, 20px)'
 }, {
@@ -72,21 +71,16 @@ const ae2 = new  KeyframeEffect(target2, [{
   direction: 'alternate' as any
 })
 
-const an = new Animation(ae)
-an.play()
+
 setTimeout(() => {
   an.pause()
 }, 3100)
 
-const an1 = new Animation(ae1)
-an1.play()
 setTimeout(() => {
   an1.pause()
 }, 3100)
 
 
-const an2 = new Animation(ae2)
-an2.play()
 setTimeout(() => {
   an2.pause()
 }, 3100)
