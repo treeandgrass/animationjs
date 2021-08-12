@@ -1,28 +1,22 @@
-import { easeInOut } from './timings/bezierEasing'
-import { minMax } from './utils'
 
+import { IObj, IKeyframeEffectOptions } from './types'
+import { KeyframeEffect } from './animationEffect'
+import { Animation } from './animation'
+
+// exports
 export * from './animation'
-export * from './effect'
+export * from './animationEffect'
 
-export const play = (id: string) => {
-  const duration = 5000
-  const value = 300
-
-  const target = document.getElementById(id) as HTMLDivElement
-  let current = 0
-  let start = 0
-  const run = (t: number) => {
-    if (!start) start = t
-    current = t
-    const timing = easeInOut(minMax(current - start, 0, duration) / duration)
-    target.style.transform = `translateX(${timing * value}px)`
-    if (current - start <= duration) {
-      requestAnimationFrame(run)
-    } else {
-      start = 0
-    }
-  }
-  requestAnimationFrame((t) => {
-    run(t)
-  })
+/**
+ * play animation
+ * @param target
+ * @param keyframes
+ * @param options
+ * @returns
+ */
+export const anime = (target: Element, keyframes: IObj[] | IObj, options: IKeyframeEffectOptions) => {
+  const keyframeEffect = new KeyframeEffect(target, keyframes, options)
+  const animation = new Animation(keyframeEffect)
+  animation.play()
+  return animation
 }
