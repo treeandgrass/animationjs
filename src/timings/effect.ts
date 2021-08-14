@@ -32,7 +32,7 @@ export const effect = (easing: string): EASE_FUNC => {
     throw new Error(`${easing} is not invalid`)
   }
   const match = /\(([^)]+)\)/.exec(easing)
-  if (!match || match[1]) {
+  if (!match || !match[1]) {
     throw new Error(`${easing} is not invalid`)
   }
   const params = match[1].split(',').map((d) => parseFloat(d))

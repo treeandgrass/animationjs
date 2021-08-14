@@ -100,8 +100,6 @@ export const EASING_FUNCTION_SET = {
   stepMiddle: 'step-middle',
 }
 
-export const SUPPORTED_EASING = ['linear', 'ease', 'ease-in', 'ease-out', 'ease-in-out', 'spring']
-
 export const PreserveProps = ['easing', 'offset', 'composite']
 
 export const UNRESOLVED = null

@@ -7,7 +7,7 @@ import { IAnimationElement } from './target/element'
 import { calculateDirectedProcessFromLocalTime } from './timings/progress'
 import { IOptionalEffectTiming, IEffectTiming, IComputedEffectTiming, EASE_FUNC,
   IKeyframeEffectOptions, IObj, Interpolation, ICommit, TimeFunc, PropFunc } from './types'
-import { EASING_FUNCTION_SET, SUPPORTED_EASING, PreserveProps,
+import { EASING_FUNCTION_SET, PreserveProps,
   InitializeComputedTiming, InitializeEffectTiming } from './constant'
 import { PropertyHandler, mapHandler } from './handlers/handler'
 
@@ -272,9 +272,6 @@ export class KeyframeEffect implements AnimationEffect {
           }
         } else if (prop === 'easing') {
           const easingValue = propValue + ''
-          if (!SUPPORTED_EASING.includes(easingValue)) {
-            throw new Error(`${easingValue} is not supported`)
-          }
           if (!easingValue) {
             frame.easing = EASING_FUNCTION_SET.linear // default linear
           }
