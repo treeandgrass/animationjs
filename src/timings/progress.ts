@@ -14,7 +14,7 @@ const calPhaseState = (localTime: number | null, activeDuration: number, timing:
   if (localTime === UNRESOLVED) {
     return TimelinePhase.inactive
   }
-  const endTime = timing.delay + activeDuration + timing.endDelay 
+  const endTime = timing.delay + activeDuration + timing.endDelay
   if (localTime < Math.min(timing.delay, endTime)) {
     return TimelinePhase.before
   } else if (localTime >= Math.min(endTime, activeDuration + timing.delay)) {
@@ -26,7 +26,7 @@ const calPhaseState = (localTime: number | null, activeDuration: number, timing:
 /**
  * calculating-the-active-time
  * https://drafts.csswg.org/web-animations/#calculating-the-active-time
- * @returns 
+ * @returns
  */
 const calculatingTheActiveTime = (timing: IComputedEffectTiming, activeDuration: number, localTime: number | null, phaseState: TimelinePhase) => {
   if (phaseState === TimelinePhase.before) {
@@ -37,7 +37,7 @@ const calculatingTheActiveTime = (timing: IComputedEffectTiming, activeDuration:
     return localTime as number - timing.delay
   } else if (phaseState === TimelinePhase.after) {
     if (timing.fill === FillMode.both || timing.fill === FillMode.backwards) {
-      return maxMin(<number>localTime - timing.delay, activeDuration, 0)
+      return maxMin(localTime as number - timing.delay, activeDuration, 0)
     }
   }
   return UNRESOLVED
@@ -63,12 +63,12 @@ const calculatingTheOverallProgress = (activeTime: number | null, phaseState: Ti
 }
 /**
  * https://drafts.csswg.org/web-animations/#calculating-the-simple-iteration-progress
- * @param overallProgress 
- * @param phaseState 
- * @param activeTime 
- * @param activeDuration 
- * @param timing 
- * @returns 
+ * @param overallProgress
+ * @param phaseState
+ * @param activeTime
+ * @param activeDuration
+ * @param timing
+ * @returns
  */
 const calculatingSimpleIterationProgress = (overallProgress: number | null, phaseState: TimelinePhase, activeTime: number | null, activeDuration: number, timing: IComputedEffectTiming) => {
   if (overallProgress === UNRESOLVED) {
@@ -76,9 +76,9 @@ const calculatingSimpleIterationProgress = (overallProgress: number | null, phas
   }
   let simpleIterationProgress = 0
   if (overallProgress === Infinity) {
-    simpleIterationProgress = timing.iterationStart % 1.0
+    simpleIterationProgress = timing.iterationStart % 1
   } else {
-    simpleIterationProgress = overallProgress % 1.0
+    simpleIterationProgress = overallProgress % 1
   }
   /**
    * If all of the following conditions are true,
@@ -97,11 +97,12 @@ const calculatingSimpleIterationProgress = (overallProgress: number | null, phas
 // https://drafts.csswg.org/web-animations/#calculating-the-active-duration
 const calculateDuration = (timing: IComputedEffectTiming, playbackRate: number) => {
   if (timing.duration === 0 || timing.iterations === 0) {
-    return 0;
+    return 0
   }
   return Math.abs((timing.duration * timing.iterations) / playbackRate)
 }
 
+// tslint:disable-next-line: max-line-length
 const calculatingTheCurrentIteration = (activeTime: number | null, phaseState: TimelinePhase, overallProgress: number | null, simpleIterationProgress: number | null, timing: IComputedEffectTiming) => {
   if (activeTime === UNRESOLVED) {
     return UNRESOLVED
@@ -116,10 +117,10 @@ const calculatingTheCurrentIteration = (activeTime: number | null, phaseState: T
 }
 /**
  * https://drafts.csswg.org/web-animations/#calculating-the-directed-progress
- * @param simpleIterationProgress 
- * @param currentIteration 
- * @param timing 
- * @returns 
+ * @param simpleIterationProgress
+ * @param currentIteration
+ * @param timing
+ * @returns
  */
 const calculatingTheDirectedProgress = (simpleIterationProgress: number | null, currentIteration: number | null, timing: IComputedEffectTiming) => {
   if (simpleIterationProgress === UNRESOLVED) {
@@ -146,15 +147,18 @@ const calculatingTheDirectedProgress = (simpleIterationProgress: number | null, 
   return 1.0 - simpleIterationProgress
 }
 /**
- * @param localTime 
- * @returns 
+ * @param localTime
+ * @returns
  */
+// tslint:disable-next-line: max-line-length
 export const calculateDirectedProcessFromLocalTime = (localTime: number | null, playbackRate: number, timing: IComputedEffectTiming) => {
   const activeDuration = calculateDuration(timing, playbackRate)
   const phaseState = calPhaseState(localTime, activeDuration, timing)
   const activeTime = calculatingTheActiveTime(timing, activeDuration, localTime, phaseState)
   const overallProgress = calculatingTheOverallProgress(activeTime, phaseState, timing)
+  // tslint:disable-next-line: max-line-length
   const simpleIterationProgress = calculatingSimpleIterationProgress(overallProgress, phaseState, activeTime, activeDuration, timing)
+  // tslint:disable-next-line: max-line-length
   const currentIteration = calculatingTheCurrentIteration(activeTime, phaseState, overallProgress, simpleIterationProgress, timing)
   const progress = calculatingTheDirectedProgress(simpleIterationProgress, currentIteration, timing)
   return { progress, activeDuration, currentIteration }

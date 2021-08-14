@@ -18,7 +18,7 @@ for (var i = 0; i < starCount; ++i) {
   star.setAttribute('class', 'star' + (3 - Math.floor((speed / 1000) / 8)));
   star.style.backgroundColor = 'white';//rgb(' + Math.round(Math.random() * 255) + ', ' + Math.round(Math.random() * 255) + ', ' + Math.round(Math.random() * 255) + ')';
   universe.appendChild(star);
-  ani = anime(star, [{transform: 'translate3d(' + width + 'px, ' + ypos + 'px, 0)'},
+  anime(star, [{transform: 'translate3d(' + width + 'px, ' + ypos + 'px, 0)'},
                 {transform: 'translate3d(-' + Math.random() * 256 + 'px, ' + ypos + 'px, 0)'}],
                {delay: Math.random() * -speed, duration: speed, iterations: 1000})
 }

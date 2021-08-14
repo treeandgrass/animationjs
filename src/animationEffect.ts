@@ -131,9 +131,7 @@ export class KeyframeEffect implements AnimationEffect {
         if (!isFinite(delay)) {
           throw new Error('KeyframeEffect: delay must be finite')
         }
-        if (delay >= 0) {
-          timings.delay = delay
-        }
+        timings.delay = delay
       }
       if (key === 'endDelay' && typeof options[key] === 'number') {
         const endDelay = options[key] as number

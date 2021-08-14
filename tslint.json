@@ -2,7 +2,7 @@
     "extends": "tslint:recommended",
     "rules": {
         "max-line-length": {
-            "options": [120]
+            "options": [200]
         },
         "indent": [true, "spaces", 2],
         "new-parens": true,
