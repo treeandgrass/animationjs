@@ -28,7 +28,8 @@
     "transition": "webpack-dev-server --config ./examples/transition/webpack.config.js --env.production",
     "color": "webpack-dev-server --config ./examples/color/webpack.config.js --env.production",
     "stars": "webpack-dev-server --config ./examples/stars/webpack.config.js --env.production",
-    "expandoboard": "webpack-dev-server --config ./examples/expandoboard/webpack.config.js --env.production"
+    "expandoboard": "webpack-dev-server --config ./examples/expandoboard/webpack.config.js --env.production",
+    "spin": "webpack-dev-server --config ./examples/spin/webpack.config.js --env.production"
   },
   "dependencies": {
     "@types/gl-matrix": "^2.4.5",

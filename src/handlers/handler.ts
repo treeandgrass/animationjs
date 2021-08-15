@@ -1,36 +1,45 @@
-import { IObj } from '../types'
+import { IParsedProps } from '../types'
 import { parseValueAndUnit } from './unit'
 import { parseTransformProp } from './transform'
 import { interpolate, toNumbers } from '../utils'
 import { toRGBA, toRGBAStr, defaultColor } from './color'
-
 export class PropertyHandler {
   public static transform = (originValue: string, targetValue: string) => {
     const reg = /\s*(\w+)\(([^)]*)\)/g
-    const parsedOriginValue: IObj = {}
-    const parsedTargetValue: IObj = {}
+    const parsedOriginValue: IParsedProps[] = []
+    const parsedTargetValue: IParsedProps[] = []
     // parse origin match
     let match: RegExpExecArray | null = null
     while (match = reg.exec(originValue)) {
       if (match.length >= 3) {
-        parsedOriginValue[match[1]] = match[2]
+        const parsedValue = parseValueAndUnit(match[2])
+        parsedOriginValue.push({
+          prop: match[1],
+          value: {
+            unit: parsedValue.unit,
+            values: toNumbers(parsedValue.values) as number[]
+          }
+        })
       }
     }
     // parse target match
     reg.lastIndex = 0
     while (match = reg.exec(targetValue)) {
       if (match.length >= 3) {
-        parsedTargetValue[match[1]] = match[2]
+        const parsedValue = parseValueAndUnit(match[2])
+        parsedTargetValue.push({
+          prop: match[1],
+          value: {
+            unit: parsedValue.unit,
+            values: toNumbers(parsedValue.values) as number[]
+          }
+        })
       }
     }
-    const originValueKeys = Object.keys(parsedOriginValue)
-    const targetValueKeys = Object.keys(parsedTargetValue)
-    if (originValueKeys.length !== targetValueKeys.length) {
-      throw new TypeError(`invalid value: ${originValue} and ${targetValue}`)
-    }
     // check origin value and target value
-    originValueKeys.forEach((key: string) => {
-      if (!parsedOriginValue[key] || typeof parsedTargetValue[key] !== typeof parsedOriginValue[key]) {
+    parsedOriginValue.forEach((item: IParsedProps, i: number) => {
+      const targetItem = parsedTargetValue[i]
+      if (item.prop !== targetItem.prop || item.value.values.length !== item.value.values.length) {
         throw new TypeError(`invalid value: ${originValue} and ${targetValue}`)
       }
     })
@@ -40,10 +49,9 @@ export class PropertyHandler {
      */
     return (t: number): string => {
       const value: string[] = []
-      originValueKeys.forEach((key) => {
-        const origin = parsedOriginValue[key]
-        const target = parsedTargetValue[key]
-        value.push(parseTransformProp(key, origin as string, target as string, t))
+      parsedOriginValue.forEach((origin: IParsedProps, i: number) => {
+        const target = parsedTargetValue[i]
+        value.push(parseTransformProp(origin, target, t))
       })
       return value.join(' ')
     }

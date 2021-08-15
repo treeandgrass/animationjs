@@ -87,3 +87,12 @@ export interface ITransform {
   d: any[]
   t: string
 }
+
+export interface ITransformUnitValue {
+  unit: string,
+  values: number[]
+}
+export interface IParsedProps {
+  prop: string
+  value: ITransformUnitValue
+}
