@@ -303,21 +303,22 @@ export class KeyframeEffect implements AnimationEffect {
     if (isExistNullOffset) {
       let lastOffsetIndex = 0
       let lastOffsetValue = 0
+      const keyframesLength = frames.length
+      if (keyframesLength > 0 && isNull(frames[0].offset)) {
+        frames[0].offset = 0
+      }
+      if (keyframesLength > 0 && isNull(frames[keyframesLength - 1].offset)) {
+        frames[keyframesLength - 1].offset = 1
+      }
       frames.forEach((frame, i) => {
         const offset = frame.offset
-        if (i === 0) {
-          frame.offset = frame.offset || 0.0
-        } else if (i === frames.length - 1) {
-          frame.offset = frame.offset || 1.0
-        } else {
-          if (!isNull(offset)) {
-            // 处理offset不存在的情况，做均匀插值
-            for (let j = 1; j < i - lastOffsetIndex; j++) {
-              frames[j].offset = lastOffsetValue + (+frames[i].offset - lastOffsetValue) * j / (i - lastOffsetIndex)
-            }
-            lastOffsetIndex = i
-            lastOffsetValue = +frame.offset
+        if (!isNull(offset)) {
+          // 处理offset不存在的情况，做均匀插值
+          for (let j = 1; j < i - lastOffsetIndex; j++) {
+            frames[j].offset = lastOffsetValue + (+frames[i].offset - lastOffsetValue) * j / (i - lastOffsetIndex)
           }
+          lastOffsetIndex = i
+          lastOffsetValue = +frame.offset
         }
       })
     }
